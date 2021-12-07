@@ -4,6 +4,7 @@ import { ethers } from 'ethers'
 import { Box, Flex, Text, Spacer, Button} from '@chakra-ui/react'
 import dynamic from 'next/dynamic'
 import { shortAddress } from '../../../utils/helpers'
+import NextLink from 'next/link'
 
 import { contractAddress, contractAbi } from '../../../config'
 
@@ -24,7 +25,7 @@ export default function Index(props) {
 
                 <Flex direction="column" w="50%">
                     <Text fontWeight="semibold" fontSize="3xl">{props.token.name}</Text>
-                    <Text>Samples: {props.token.licenseCount}</Text>
+                    {/* <Text>Samples: {props.token.licenseCount}</Text> */}
                     <Spacer/>
                     <Flex direction="column" align="start" p={5} rounded="xl" overflow="hidden" border="1px" borderColor="gray.300" bg="gray.200" >
                         <Text>Price:</Text>
@@ -38,7 +39,7 @@ export default function Index(props) {
             <Flex w="100%" maxWidth="1000px" pt={10} mx="auto">
                 <Flex p={5} direction="column" align="start" w="50%" rounded="xl" overflow="hidden" border="1px" borderColor="gray.200" mr={6} >
                     <Text fontSize="2xl" fontWeight="semibold">Created by: <Text as="span" mr={8} fontSize="xl" fontWeight="normal" textColor="gray.500">{shortAddress(props.token.creator)}</Text></Text>
-                    <Button mt={5}>See more by this artist</Button>
+                    <NextLink href={`/${encodeURIComponent(props.token.creator)}`}><Button mt={5}>See more by this artist</Button></NextLink>
                 </Flex>
                 
             </Flex>
@@ -47,7 +48,7 @@ export default function Index(props) {
 }
 
 export async function getStaticPaths() {
-    const provider = new ethers.providers.JsonRpcProvider(`https://speedy-nodes-nyc.moralis.io/e67ef907b3b5634adefb2f7f/eth/rinkeby`)
+    const provider = new ethers.providers.JsonRpcProvider(process.env.ALCHEMY_RINKEBY_URL)
     const soundLibrary = new ethers.Contract(contractAddress, contractAbi, provider)
     const tokenCount = await soundLibrary.tokenCount()
     const data = []

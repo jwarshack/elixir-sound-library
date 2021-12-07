@@ -18,7 +18,7 @@ export default function SoundTable({ sounds }) {
                 {
                     sounds.map((sound, key) => {
                         return (
-                            <SoundRow sound={sound}/>
+                            <SoundRow key={key} sound={sound}/>
                         )
                     })
                 }

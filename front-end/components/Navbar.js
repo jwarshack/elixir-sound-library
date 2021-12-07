@@ -80,7 +80,7 @@ export default function Navbar() {
                 {/* <NextLink href="/"><Heading color="white"><Text as="span" color="green.600">Elixir</Text> Sound Library</Heading></NextLink> */}
                 {/* <NextLink href="/"><Image src={logo}/></NextLink> */}
                 {/* <NextLink href="/"><Link p={0} m={0}><Image src={logo} /></Link></NextLink> */}
-                <NextLink href="/"><Image src={logo} /></NextLink>
+                <NextLink href="/"><Image src={logo} alt="Elixir Sound Library Logo"/></NextLink>
 
                 <IconButton cursor="pointer" color="white" bg="black" as={!showMobileNav ? FiMenu : FiX} onClick={toggleMobileNav} display={{base: "block", md: "none"}}/>
                 <Box display={{base:"none", md:"block"}}>

@@ -12,23 +12,23 @@ export default function Create() {
 
 
 
-    async function createSound() {
-        const { price, name } = formInput
-        if (!name || !price || !fileUrl) return
+    // async function createSound() {
+    //     const { price, name } = formInput
+    //     if (!name || !price || !fileUrl) return
 
-        const { web3Provider } = useWeb3()
+    //     const { web3Provider } = useWeb3()
 
         
 
-        if (web3Provider) {
-            const signer = web3Provider.getSigner()
-            const contract = new ethers.Contract(contractAddress, contractAbi, signer);
+    //     if (web3Provider) {
+    //         const signer = web3Provider.getSigner()
+    //         const contract = new ethers.Contract(contractAddress, contractAbi, signer);
             
-            let txn = await contract.mintSound(fileUrl)
+    //         let txn = await contract.mintSound(fileUrl)
 
 
-        }
-    }
+    //     }
+    // }
 
     function pinFileToIPFS() {
         const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
@@ -59,7 +59,7 @@ export default function Create() {
             </VStack>
 
             <input type="file" onChange={e => setFormInput({ ...formInput, name: e.target.files[0]})}/>
-            <Button  py={6} width="100%" color="white" bg="pink.500" _hover={{bg: "pink.300"}} onClick={createSound}>Upload</Button>
+            <Button  py={6} width="100%" color="white" bg="pink.500" _hover={{bg: "pink.300"}}>Upload</Button>
             <Text fontSize="sm">Elixir Sound Library takes a 2% licensing fee</Text>
         </VStack>
     )
