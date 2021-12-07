@@ -5,25 +5,25 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract ElixirSoundLibrary is ERC721 {
     
-    uint public tokenCount;
+    uint public soundCount;
     
     struct Sound {
-        uint tokenId;
-        string tokenURI;
+        uint id;
+        string uri;
         uint price;
         address payable creator;
         address[] licensees;
     }
 
     event SoundCreated (
-        uint indexed tokenId,
-        string tokenURI,
+        uint indexed id,
+        string uri,
         uint price,
         address creator
     );
 
     event SoundLicensed (
-        uint indexed tokenId,
+        uint indexed id,
         uint price,
         address creator,
         address licensee
@@ -40,45 +40,44 @@ contract ElixirSoundLibrary is ERC721 {
         owner = msg.sender;
     }
     
-    function mintSound(string memory tokenURI, uint price) public {
-        require(bytes(tokenURI).length >= 46, "Invalid token URI");
-        uint tokenId = tokenCount;
-        Sound memory newSound;
-        newSound.tokenId = tokenId;
-        newSound.tokenURI = tokenURI;
-        newSound.price = price;
-        newSound.creator = payable(msg.sender);
-        sounds[tokenId] = newSound;
-        creatorToSound[msg.sender].push(tokenId);    
-        _safeMint(msg.sender, tokenId);
-        tokenCount++;        
+    function mintSound(string memory _uri, uint _price) public {
+        uint _currentId = soundCount;
+        Sound memory _newSound;
+        _newSound.id = _currentId;
+        _newSound.uri = _uri;
+        _newSound.price = _price;
+        _newSound.creator = payable(msg.sender);
+        sounds[_currentId] = _newSound;
+        creatorToSound[msg.sender].push(_currentId);    
+        _safeMint(msg.sender, _currentId);
+        soundCount++;        
 
-        emit SoundCreated(tokenId, tokenURI, price, msg.sender);
+        emit SoundCreated(_currentId, _uri, _price, msg.sender);
     }
     
-    function addLicensee(uint tokenId) public payable {
-        require(!isLicensed[tokenId][msg.sender], "Sound is already licensed");
-        uint price = sounds[tokenId].price;
-        uint takeFee = price / 50;
-        address creator = sounds[tokenId].creator;
-        require(msg.sender != creator, "Licensee cannot be the creator.");
-        require(msg.value == price + takeFee, "Please submit the correct amount of ether");
-        sounds[tokenId].licensees.push(msg.sender);
-        licenseeToSound[msg.sender].push(tokenId);
-        isLicensed[tokenId][msg.sender] = true;
+    function licenseSound(uint _id) public payable {
+        require(!isLicensed[_id][msg.sender], "Sound is already licensed");
+        uint _price = sounds[_id].price;
+        uint _fee = _price / 50;
+        address _creator = sounds[_id].creator;
+        require(msg.sender != _creator, "Licensee cannot be the creator.");
+        require(msg.value == _price, "Please submit the correct amount of ether");
+        sounds[_id].licensees.push(msg.sender);
+        licenseeToSound[msg.sender].push(_id);
+        isLicensed[_id][msg.sender] = true;
 
-        payable(creator).transfer(price);
-        payable(owner).transfer(takeFee);
+        payable(_creator).transfer(_price - _fee);
+        payable(owner).transfer(_fee);
 
-        emit SoundLicensed(tokenId, price, creator, msg.sender);
+        emit SoundLicensed(_id, _price, _creator, msg.sender);
     }
     
-    function sound(uint tokenId) public view returns (Sound memory) {
-        return sounds[tokenId];
+    function sound(uint _id) public view returns (Sound memory) {
+        return sounds[_id];
     }
 
-    function creatorSounds(address creator) public view returns (uint[] memory) {
-        return creatorToSound[creator];
+    function creatorSounds(address _creator) public view returns (uint[] memory) {
+        return creatorToSound[_creator];
     }
 
     function licenses() public view returns (uint[] memory) {

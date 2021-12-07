@@ -1,19 +1,20 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-describe("Greeter", function () {
-  it("Should return the new greeting once it's changed", async function () {
-    const Greeter = await ethers.getContractFactory("Greeter");
-    const greeter = await Greeter.deploy("Hello, world!");
-    await greeter.deployed();
+describe("Elixir Sound Library", function () {
+  it("should mint a sound", async function (){
+    const Elixir = await hre.ethers.getContractFactory("ElixirSoundLibrary");
+    const elixir = await Elixir.deploy();
+  
+    await elixir.deployed();
 
-    expect(await greeter.greet()).to.equal("Hello, world!");
+    const [_, creator, licensee] = await hre.ethers.getSigners()
 
-    const setGreetingTx = await greeter.setGreeting("Hola, mundo!");
 
-    // wait until the transaction is mined
-    await setGreetingTx.wait();
 
-    expect(await greeter.greet()).to.equal("Hola, mundo!");
-  });
+    let tx = await elixir.connect(creator).mintSound(hre.ethers.utils('0.1'))
+
+
+  })
+
 });
