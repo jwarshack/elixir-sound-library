@@ -1,5 +1,6 @@
 
 import { useEffect } from 'react'
+import Head from 'next/head'
 import { Heading, VStack } from '@chakra-ui/layout'
 import Hero from '../components/Hero'
 import { useWeb3 } from '../context/useWeb3'
@@ -13,9 +14,14 @@ export default function Home() {
   }, [])
 
   return (
-    <VStack id="hero" p={10}>
-      <Hero />
-    </VStack>
+    <>
+      <Head>
+        <title>Elixir Sound Library</title>
+      </Head>
+      <VStack id="hero" p={10}>
+        <Hero />
+      </VStack>
+    </>
   
 
   )

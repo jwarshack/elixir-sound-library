@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Head from 'next/head'
 import {VStack, Button, Input, Text} from '@chakra-ui/react'
 import { ethers } from 'ethers'
 import { useWeb3 } from '../context/useWeb3'
@@ -52,15 +53,20 @@ export default function Create() {
 
 
     return (
-        <VStack py={20} px={10} spacing={8}maxWidth={700} mx="auto"> 
-            <VStack width="100%">
-                <Input py={6} placeholder="Sound Name" onChange={e => setFormInput({ ...formInput, name: e.target.value})}/>
-                <Input py={6} placeholder="Price in ETH" onChange={e => setFormInput({ ...formInput, price: e.target.value})}/>
-            </VStack>
+        <>
+            <Head>
+                <title>Create | Elixir Sound Library</title>
+            </Head>
+            <VStack py={20} px={10} spacing={8}maxWidth={700} mx="auto"> 
+                <VStack width="100%">
+                    <Input py={6} placeholder="Sound Name" onChange={e => setFormInput({ ...formInput, name: e.target.value})}/>
+                    <Input py={6} placeholder="Price in ETH" onChange={e => setFormInput({ ...formInput, price: e.target.value})}/>
+                </VStack>
 
-            <input type="file" onChange={e => setFormInput({ ...formInput, name: e.target.files[0]})}/>
-            <Button  py={6} width="100%" color="white" bg="pink.500" _hover={{bg: "pink.300"}}>Upload</Button>
-            <Text fontSize="sm">Elixir Sound Library takes a 2% licensing fee</Text>
-        </VStack>
+                <input type="file" onChange={e => setFormInput({ ...formInput, name: e.target.files[0]})}/>
+                <Button  py={6} width="100%" color="white" bg="pink.500" _hover={{bg: "pink.300"}}>Upload</Button>
+                <Text fontSize="sm">Elixir Sound Library takes a 2% licensing fee</Text>
+            </VStack>
+        </>
     )
 }

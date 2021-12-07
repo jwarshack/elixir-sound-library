@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Head from 'next/head'
 import SoundTable from '../components/SoundTable'
 import { Box, Flex, Text } from '@chakra-ui/layout'
 import { Spinner } from '@chakra-ui/react'
@@ -54,9 +55,14 @@ export default function MySounds() {
     if (!sounds.length || !web3Provider) return <Text p={8} fontSize="3xl">There are no sounds to display</Text>
 
     return (
-        <Box p={6}>
-            <SoundTable sounds={sounds}/>
-        </Box>
+        <>
+            <Head>
+                <title>My Sounds | Elixir Sound Library</title>
+            </Head>
+            <Box p={6}>
+                <SoundTable sounds={sounds}/>
+            </Box>
+        </>
     )
 }
 

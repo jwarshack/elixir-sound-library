@@ -1,12 +1,19 @@
 import React from 'react'
+import Head from 'next/head'
 import SoundGrid from '../components/SoundGrid'
 import { ethers } from 'ethers'
+
 
 import { contractAddress, contractAbi } from '../config'
 
 export default function Browse(props) {
     return (
-        <SoundGrid sounds={props.sounds}/>
+        <>
+            <Head>
+                <title>Browse | Elixir Sound Library</title>
+            </Head>
+            <SoundGrid sounds={props.sounds}/>
+        </>
     )
 }
 

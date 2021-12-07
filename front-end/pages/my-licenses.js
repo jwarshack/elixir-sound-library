@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Head from 'next/head'
 import SoundTable from '../components/SoundTable'
 import { Spinner, Box, Text, Flex } from '@chakra-ui/react'
 import { useWeb3 } from '../context/useWeb3'
@@ -54,8 +55,14 @@ export default function Licenses() {
     if (!sounds.length || !web3Provider) return <Text p={8} fontSize="3xl">There are no sounds to display</Text>
 
     return (
-        <Box p={6}>
-            <SoundTable sounds={sounds}/>
-        </Box>
+        <>
+            <Head>
+                <title>My Licenses | Elixir Sound Library</title>
+            </Head>
+
+            <Box p={6}>
+                <SoundTable sounds={sounds}/>
+            </Box>
+        </>
     )
 }
