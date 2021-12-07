@@ -5,9 +5,6 @@ import SoundCard from './SoundCard'
 
 export default function SoundGrid({ sounds }) {
     const [allowPlay, setAllowPlay] = useState()
-
-
-
     return (
         <Grid
             p={10}
