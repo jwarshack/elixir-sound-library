@@ -7,7 +7,7 @@ import { shortAddress } from '../utils/helpers'
 import { useWeb3 } from "../context/useWeb3"
 import { FiMenu, FiX } from 'react-icons/fi'
 import MobileNav from "../components/MobileNav"
-import logo from "../public/img/elixir.png"
+import logo from "../public/img/logo.png"
 
 export default function Navbar() {
 
