@@ -9,10 +9,6 @@ export default function Home() {
 
   const { web3Provider } = useWeb3()
 
-  useEffect(() => {
-    console.log(web3Provider)
-  }, [])
-
   return (
     <>
       <Head>
