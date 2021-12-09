@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react'
 import { ethers } from 'ethers'
-import { Box, Flex, Text, Spinner, Button} from '@chakra-ui/react'
+import { Box, Flex, Text, Spinner, Button, useToast} from '@chakra-ui/react'
 import dynamic from 'next/dynamic'
 import { shortAddress } from '../../../utils/helpers'
 import NextLink from 'next/link'
@@ -18,9 +18,10 @@ export default function Index(props) {
 
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
+    const toast = useToast()
 
 
-    const { web3Provider } = useWeb3()
+    const { web3Provider, setWeb3Provider } = useWeb3()
 
 
 
@@ -31,7 +32,21 @@ export default function Index(props) {
 
     async function licenseSound(id) {
         setIsLoading(true)
-        if (web3Provider) {
+        if (!web3Provider) {
+            setIsLoading(false)
+            toast({
+                position: "top",
+                title: "No wallet connected.",
+                description: "Please connect your wallet to continue.",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            })
+            return
+        }
+            
+
+        try {
             const signer = web3Provider.getSigner()
             const contract = new ethers.Contract(contractAddress, contractAbi, signer);
             const sound = await contract.sound(id)
@@ -39,10 +54,22 @@ export default function Index(props) {
 
             let transaction = await contract.licenseSound(id, {value: price.toString()})
             await transaction.wait()
-            setIsLoading(false)
-
             router.push('/my-licenses')
+
+        } catch (error) {
+            toast({
+                position: "top",
+                title: "An error has occured.",
+                description: "Your transaction can not be completed.",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            })
+            console.log(error)
+
         }
+        setIsLoading(false)
+
 
 
     }

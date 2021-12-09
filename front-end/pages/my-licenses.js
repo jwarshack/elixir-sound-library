@@ -22,7 +22,6 @@ export default function Licenses() {
         if (web3Provider) {
             const signer = web3Provider.getSigner()
             const contract = new ethers.Contract(contractAddress, contractAbi, signer);
-            const address = await signer.getAddress()
             const licenses = await contract.licenses()
 
             const data = []

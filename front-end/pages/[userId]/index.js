@@ -18,7 +18,6 @@ export default function index(props) {
                 <title>Profile - {props.userId} Elixir Sound Library</title>
             </Head>
             <VStack pt={10}>
-                {/* <Image height="100px" width="100px" layout="fixed" alt="identicon" src={`data:image/png;base64,${new Identicon(props.userId, 100).toString()}`} className="rounded"/> */}
                 <Davatar size={75} address={props.userId}/>
                 <Heading>{shortAddress(props.userId)}</Heading>
             </VStack>

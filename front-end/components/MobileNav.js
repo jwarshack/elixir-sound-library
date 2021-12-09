@@ -14,7 +14,7 @@ export default function MobileNav({ toggleMobileNav }) {
       bgColor="black"
       zIndex={20}
       h="100vh"
-      pos="fixed"
+      pos="absolute"
       top="100"
       left="0"
       py={10}

@@ -1,30 +1,38 @@
 import { Flex, Box, Link, VStack, useToast, Button, Text} from "@chakra-ui/react"
 import NextLink from 'next/link'
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ethers } from "ethers"
 import { shortAddress } from '../utils/helpers'
 import { useWeb3 } from "../context/useWeb3"
 import { FiMenu, FiX } from 'react-icons/fi'
 import MobileNav from "../components/MobileNav"
 import logo from "../public/img/logo.png"
-import { useRouter } from "next/router"
 
 export default function Navbar() {
 
-    const router = useRouter()
 
     const [isLoading, setIsLoading] = useState(false)
     const [walletAddress, setWalletAddress] = useState()
     const [showMobileNav, setShowMobileNav] = useState(false)
 
-    const { setWeb3Provider } = useWeb3()
+    const { setWeb3Provider, web3Provider } = useWeb3()
     const toast = useToast()
 
     function toggleMobileNav() {
         const prevValue = showMobileNav
         setShowMobileNav(!prevValue)
     }
+
+    // useEffect(() => {
+    //     if (web3Provider) {
+    //         const signer = web3Provider.getSigner()
+    //         const address = signer.getAddress()
+    //         console.log(address)
+    //         setWalletAddress(address)
+    //     }
+        
+    // }, [web3Provider])
 
 
     async function connectWallet() {
@@ -59,6 +67,14 @@ export default function Navbar() {
                     setWalletAddress(address) 
                     setWeb3Provider(provider)
                 }
+
+                ethereum.on('accountsChanged', () => {
+                    window.location.reload()
+                  });
+                  
+                  ethereum.on('chainChanged', () => {
+                    window.location.reload();
+                  });
             } catch(error) {
                 console.log(error)
 
