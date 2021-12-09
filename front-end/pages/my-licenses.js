@@ -5,6 +5,7 @@ import { Spinner, Box, Text, Flex } from '@chakra-ui/react'
 import { useWeb3 } from '../context/useWeb3'
 import { ethers } from 'ethers'
 import { contractAddress, contractAbi } from '../config'
+import axios from 'axios'
 
 
 export default function Licenses() {
@@ -22,26 +23,25 @@ export default function Licenses() {
             const signer = web3Provider.getSigner()
             const contract = new ethers.Contract(contractAddress, contractAbi, signer);
             const address = await signer.getAddress()
-            console.log(address)
-            const mySounds = await contract.creatorSounds(address)
-            console.log(mySounds)
+            const licenses = await contract.licenses()
 
             const data = []
-
-            for(var i = 0; i < mySounds.length; i++) {
-                const token = await contract.getSound(i)
+    
+            for(var i = 0; i < licenses.length; i++) {
+                let lic = licenses[i].toNumber()
+                const token = await contract.sound(lic)
                 data.push(token)
             }
             let theseSounds = await Promise.all(data.map(async i => {
                 let price = ethers.utils.formatUnits(i.price.toString(), 'ether')
+                let metadata = await axios.get(i.uri)
                 let sound = {
                     price,
-                    name: i.name,
+                    name: metadata.data.name,
                     creator: i.creator,
-                    tokenURI: i.tokenURI,
+                    tokenURI: metadata.data.audio,
                     licenseCount: i.licensees.length
                 }
-
                 return sound
 
             }))

@@ -1,10 +1,12 @@
 import { useState, useRef } from 'react'
 import Head from 'next/head'
-import {VStack, Button, Input, Text} from '@chakra-ui/react'
+import {VStack, Button, Input, Text, Flex, Spinner} from '@chakra-ui/react'
 import { ethers } from 'ethers'
 import { useWeb3 } from '../context/useWeb3'
 import { contractAddress, contractAbi } from '../config'
 import { create as ipfsClient}  from 'ipfs-http-client'
+import { useRouter } from 'next/router'
+
 
 const id = process.env.NEXT_PUBLIC_INFURA_IPFS_ID
 const secret = process.env.NEXT_PUBLIC_INFURA_IPFS_SECRET
@@ -21,19 +23,25 @@ const client = ipfsClient({
     }
 })
 
-
 export default function Create() {
+    const router = useRouter()
 
+
+    const { web3Provider } = useWeb3()
 
     const [formInput, setFormInput] = useState({ name: null, price: null, file: null })
+    const [isLoading, setIsLoading] = useState(false)
     const audioRef = useRef()
 
     async function upload() {
 
+        setIsLoading(true)
+
+
         const { name, price, file } = formInput
         
 
-        if (!name || !price || !file) {
+        if (!name || !price || !file || !web3Provider) {
             alert('Please fill out all fields.')
             return
         } 
@@ -48,6 +56,8 @@ export default function Create() {
 
         const json = JSON.stringify(metadata)
 
+        let url
+
         try {
             const added = await client.add(
                 json,
@@ -55,12 +65,30 @@ export default function Create() {
                     progress: (prog) => console.log(`received: ${prog}`)
                 }
             )
-            const url = `ipfs://ipfs/${added.path}`
+            url = `https://ipfs.infura.io/ipfs/${added.path}`
             console.log(url)
 
         } catch(error) {
             console.log(error)
         }
+
+        mintSound(url, price)
+
+    }
+
+    async function mintSound(url, price) {
+
+        if(web3Provider) {
+            const signer = web3Provider.getSigner()
+            const contract = new ethers.Contract(contractAddress, contractAbi, signer);
+            const tx = await contract.mintSound(url, ethers.utils.parseEther(price))
+
+            await tx.wait()
+            setIsLoading(false)
+            
+            router.push('/')
+        }
+    
     }
 
     async function uploadAudioFile(file) {
@@ -72,7 +100,7 @@ export default function Create() {
                     progress: (prog) => console.log(`received: ${prog}`)
                 }
             )
-            const url = `ipfs://ipfs/${added.path}`
+            const url = `https://ipfs.infura.io/ipfs/${added.path}`
             console.log(url)
             return url
 
@@ -88,8 +116,8 @@ export default function Create() {
         try {
             const url = window.URL.createObjectURL(file)
             audioRef.current.style.display = "block"
-            audioRef.current?.src = URL.createObjectURL(file)
-            audioRef.current?.load()
+            audioRef.current.src = URL.createObjectURL(file)
+            audioRef.current.load()
         } catch(error) {
             console.log(error)
         }
@@ -98,6 +126,7 @@ export default function Create() {
 
 
 
+    if (isLoading) return <Flex justify="center" p={20}><Spinner size="xl"/></Flex>
 
     return (
         <>

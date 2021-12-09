@@ -1,21 +1,53 @@
 
-import React from 'react'
+import React, { useState } from 'react'
 import { ethers } from 'ethers'
-import { Box, Flex, Text, Spacer, Button} from '@chakra-ui/react'
+import { Box, Flex, Text, Spinner, Button} from '@chakra-ui/react'
 import dynamic from 'next/dynamic'
 import { shortAddress } from '../../../utils/helpers'
 import NextLink from 'next/link'
+import { useRouter } from 'next/router'
+import { useWeb3 } from '../../../context/useWeb3'
+import axios from 'axios'
+
 
 import { contractAddress, contractAbi } from '../../../config'
 
 
+
 export default function Index(props) {
+
+    const router = useRouter()
+    const [isLoading, setIsLoading] = useState(false)
+
+
+    const { web3Provider } = useWeb3()
+
+
 
     const AudioPlayer = dynamic(
         () => import('../../../components/AudioPlayer'),
         {ssr: false}
     )
 
+    async function licenseSound(id) {
+        setIsLoading(true)
+        if (web3Provider) {
+            const signer = web3Provider.getSigner()
+            const contract = new ethers.Contract(contractAddress, contractAbi, signer);
+            const sound = await contract.sound(id)
+            let price = sound.price
+
+            let transaction = await contract.licenseSound(id, {value: price.toString()})
+            await transaction.wait()
+            setIsLoading(false)
+
+            router.push('/my-licenses')
+        }
+
+
+    }
+
+    if (isLoading) return <Flex justify="center" p={20}><Spinner size="xl"/></Flex>
     return (
         <Flex direction="column" p={10}>
             <Flex justify="center" w="100%" maxWidth="1000px" mx="auto">
@@ -26,13 +58,8 @@ export default function Index(props) {
                 <Flex direction="column" w="50%">
                     <Text fontWeight="semibold" fontSize="3xl">{props.token.name}</Text>
                     {/* <Text>Samples: {props.token.licenseCount}</Text> */}
-                    <Spacer/>
-                    <Flex direction="column" align="start" p={5} rounded="xl" overflow="hidden" border="1px" borderColor="gray.300" bg="gray.200" >
-                        <Text>Price:</Text>
-                        <Text>{props.token.price} ETH</Text>
-                        <Button bg="black" color="white" _hover={{bg: "gray.600"}} mt={5} px={4}>Sample</Button>
-
-                    </Flex>
+                    <Text fontSize="xl" fontWeight="semibold">Total Samples: <Text as="span" mr={8} fontSize="xl" fontWeight="normal" textColor="gray.500">{props.token.licenseCount}</Text></Text>
+                    <Text>File type: </Text>
                 </Flex>
                 
             </Flex>
@@ -41,6 +68,13 @@ export default function Index(props) {
                     <Text fontSize="2xl" fontWeight="semibold">Created by: <Text as="span" mr={8} fontSize="xl" fontWeight="normal" textColor="gray.500">{shortAddress(props.token.creator)}</Text></Text>
                     <NextLink href={`/${encodeURIComponent(props.token.creator)}`}><Button mt={5}>See more by this artist</Button></NextLink>
                 </Flex>
+                <Flex direction="column" w="50%" align="start" p={5} rounded="xl" overflow="hidden" border="1px" borderColor="gray.300" bg="gray.200" >
+                        <Text>Price:</Text>
+                        <Text>{props.token.price} ETH</Text>
+                        <Button bg="black" color="white" _hover={{bg: "gray.600"}} mt={5} px={4} onClick={() => licenseSound(props.token.tokenId)}>Sample</Button>
+
+                </Flex>
+
                 
             </Flex>
         </Flex>
@@ -50,18 +84,19 @@ export default function Index(props) {
 export async function getStaticPaths() {
     const provider = new ethers.providers.JsonRpcProvider(process.env.ALCHEMY_RINKEBY_URL)
     const soundLibrary = new ethers.Contract(contractAddress, contractAbi, provider)
-    const tokenCount = await soundLibrary.tokenCount()
+    const tokenCount = await soundLibrary.soundCount()
     const data = []
     for (var i = 0; i < tokenCount; i++) {
-        const token = await soundLibrary.getSound(i)
+        const token = await soundLibrary.sound(i)
         data.push(token)
     }
+    console.log("sound",data)
 
     let paths = data.map((token) => {
         return {
             params: {
                 userId: token.creator,
-                tokenId: token.tokenId.toString()
+                tokenId: token.id.toString()
             }
         }
     })
@@ -75,17 +110,19 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
     const tokenId = context.params.tokenId
-    const provider = new ethers.providers.JsonRpcProvider(`https://speedy-nodes-nyc.moralis.io/e67ef907b3b5634adefb2f7f/eth/rinkeby`)
+    const provider = new ethers.providers.JsonRpcProvider(process.env.ALCHEMY_RINKEBY_URL)
     const soundLibrary = new ethers.Contract(contractAddress, contractAbi, provider)
-    const sound = await soundLibrary.getSound(tokenId)
+    const sound = await soundLibrary.sound(tokenId)
     let price = ethers.utils.formatUnits(sound.price.toString(), 'ether')
+    let metadata = await axios.get(sound.uri)
 
     let thisSound = {
+        
         price,
-        tokenId: sound.tokenId.toNumber(),
-        name: sound.name,
+        tokenId: sound.id.toNumber(),
+        name: metadata.data.name,
         creator: sound.creator,
-        tokenURI: sound.tokenURI,
+        tokenURI: metadata.data.audio,
         licenseCount: sound.licensees.length
     }
 

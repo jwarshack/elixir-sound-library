@@ -19,12 +19,19 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
-module.exports = {
-  solidity: "0.8.4",
-
+ module.exports = {
+  defaultNetwork: "hardhat",
+  networks: {
+    hardhat: {
+      chainId: 1337
+    },
+    rinkeby: {
+      url: process.env.ALCHEMY_RINKEBY_URL,
+      accounts: [process.env.PRIVATE_KEY]
+    }
+  },
   etherscan: {
-    // Your API key for Etherscan
-    // Obtain one at https://etherscan.io/
     apiKey: process.env.ETHERSCAN_API_KEY
-  }
+  },
+  solidity: "0.8.4",
 };

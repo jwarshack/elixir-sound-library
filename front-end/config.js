@@ -1,4 +1,4 @@
-export const contractAddress = "0x9b7d3cF51b367B6402FF193774314E3655B76CF3"
+export const contractAddress = "0xaA90604741F1FfB224278512B493Eaef5D499107"
 export const contractAbi = [
   {
     "inputs": [],
@@ -61,19 +61,13 @@ export const contractAbi = [
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "tokenId",
+        "name": "id",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "string",
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "tokenURI",
+        "name": "uri",
         "type": "string"
       },
       {
@@ -89,7 +83,38 @@ export const contractAbi = [
         "type": "address"
       }
     ],
-    "name": "SoundTokenCreated",
+    "name": "SoundCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "creator",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "licensee",
+        "type": "address"
+      }
+    ],
+    "name": "SoundLicensed",
     "type": "event"
   },
   {
@@ -116,19 +141,6 @@ export const contractAbi = [
     ],
     "name": "Transfer",
     "type": "event"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "addLicensee",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
   },
   {
     "inputs": [
@@ -171,7 +183,7 @@ export const contractAbi = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "creator",
+        "name": "_creator",
         "type": "address"
       }
     ],
@@ -208,57 +220,6 @@ export const contractAbi = [
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getSound",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "tokenId",
-            "type": "uint256"
-          },
-          {
-            "internalType": "string",
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "internalType": "string",
-            "name": "tokenURI",
-            "type": "string"
-          },
-          {
-            "internalType": "uint256",
-            "name": "price",
-            "type": "uint256"
-          },
-          {
-            "internalType": "address payable",
-            "name": "creator",
-            "type": "address"
-          },
-          {
-            "internalType": "address[]",
-            "name": "licensees",
-            "type": "address[]"
-          }
-        ],
-        "internalType": "struct ElixirSoundLibrary.SoundToken",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
         "name": "owner",
         "type": "address"
@@ -281,6 +242,19 @@ export const contractAbi = [
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "licenseSound",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "licenses",
     "outputs": [
@@ -297,17 +271,12 @@ export const contractAbi = [
     "inputs": [
       {
         "internalType": "string",
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "tokenURI",
+        "name": "_uri",
         "type": "string"
       },
       {
         "internalType": "uint256",
-        "name": "price",
+        "name": "_price",
         "type": "uint256"
       }
     ],
@@ -420,6 +389,65 @@ export const contractAbi = [
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "sound",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "uri",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "price",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address payable",
+            "name": "creator",
+            "type": "address"
+          },
+          {
+            "internalType": "address[]",
+            "name": "licensees",
+            "type": "address[]"
+          }
+        ],
+        "internalType": "struct ElixirSoundLibrary.Sound",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "soundCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "bytes4",
         "name": "interfaceId",
         "type": "bytes4"
@@ -444,19 +472,6 @@ export const contractAbi = [
         "internalType": "string",
         "name": "",
         "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "tokenCount",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",

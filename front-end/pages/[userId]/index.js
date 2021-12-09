@@ -7,13 +7,14 @@ import { contractAddress, contractAbi } from '../../config'
 import { ethers } from 'ethers'
 import { shortAddress } from '../../utils/helpers'
 import Jazzicon from '@metamask/jazzicon'
+import axios from 'axios'
 
 
 export default function index(props) {
     return (
         <Box>
             <VStack pt={10}>
-                <Image height="100px" width="100px" layout="fixed" src={`data:image/png;base64,${new Identicon(props.userId, 100).toString()}`} className="rounded"/>
+                <Image height="100px" width="100px" layout="fixed" alt="identicon" src={`data:image/png;base64,${new Identicon(props.userId, 100).toString()}`} className="rounded"/>
                 <Heading>{shortAddress(props.userId)}</Heading>
             </VStack>
             <SoundGrid sounds={props.tokens}/>
@@ -24,10 +25,10 @@ export default function index(props) {
 export async function getStaticPaths() {
     const provider = new ethers.providers.JsonRpcProvider(process.env.ALCHEMY_RINKEBY_URL)
     const soundLibrary = new ethers.Contract(contractAddress, contractAbi, provider)
-    const tokenCount = await soundLibrary.tokenCount()
+    const tokenCount = await soundLibrary.soundCount()
     const data = []
     for (var i = 0; i < tokenCount; i++) {
-        const token = await soundLibrary.getSound(i)
+        const token = await soundLibrary.sound(i)
         data.push(token)
     }
 
@@ -49,24 +50,25 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
     const userId = context.params.userId
-    const provider = new ethers.providers.JsonRpcProvider(`https://speedy-nodes-nyc.moralis.io/e67ef907b3b5634adefb2f7f/eth/rinkeby`)
+    const provider = new ethers.providers.JsonRpcProvider(process.env.ALCHEMY_RINKEBY_URL)
     const soundLibrary = new ethers.Contract(contractAddress, contractAbi, provider)
     const creatorSounds = await soundLibrary.creatorSounds(userId)
     const data = []
     for (var i = 0; i < creatorSounds.length; i++) {
         let tokenId = creatorSounds[i]
-        const token = await soundLibrary.getSound(tokenId)
+        const token = await soundLibrary.sound(tokenId)
         data.push(token)
     }
 
     let theseSounds = await Promise.all(data.map(async i => {
         let price = ethers.utils.formatUnits(i.price.toString(), 'ether')
+        let metadata = await axios.get(i.uri)
         let sound = {
             price,
-            tokenId: i.tokenId.toNumber(),
-            name: i.name,
+            tokenId: i.id.toNumber(),
+            name: metadata.data.name,
             creator: i.creator,
-            tokenURI: i.tokenURI,
+            tokenURI: metadata.data.audio,
             licenseCount: i.licensees.length
         }
         console.log(sound)
