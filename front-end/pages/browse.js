@@ -9,8 +9,6 @@ import { contractAddress, contractAbi } from '../config'
 
 export default function Browse(props) {
 
-
-
     return (
         <>
             <Head>
