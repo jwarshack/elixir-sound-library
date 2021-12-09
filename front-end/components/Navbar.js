@@ -1,4 +1,4 @@
-import { Flex, Box, Link, VStack, useToast, Button} from "@chakra-ui/react"
+import { Flex, Box, Link, VStack, useToast, Button, Text} from "@chakra-ui/react"
 import NextLink from 'next/link'
 import Image from "next/image"
 import { useState } from "react"
@@ -8,8 +8,11 @@ import { useWeb3 } from "../context/useWeb3"
 import { FiMenu, FiX } from 'react-icons/fi'
 import MobileNav from "../components/MobileNav"
 import logo from "../public/img/logo.png"
+import { useRouter } from "next/router"
 
 export default function Navbar() {
+
+    const router = useRouter()
 
     const [isLoading, setIsLoading] = useState(false)
     const [walletAddress, setWalletAddress] = useState()
@@ -92,7 +95,7 @@ export default function Navbar() {
                 </Box>
             </Flex>
             <Flex display={{base: "none", md:"block"}} w="100%" spacing="3">
-                <NextLink href="/"><Link  mr={6} color="pink.500" _hover="none">Home</Link></NextLink>
+                <NextLink href="/"><Link  mr={6} color="pink.500" _hover="none" >Home</Link></NextLink>
                 <NextLink href="/browse" ><Link mr={6} color="pink.500" _hover="none">Browse</Link></NextLink>
                 <NextLink href="/popular" ><Link mr={6} color="pink.500" _hover="none">Popular</Link></NextLink>
                 <NextLink href="/my-sounds" ><Link mr={6} color="pink.500" _hover="none">My Sounds</Link></NextLink>

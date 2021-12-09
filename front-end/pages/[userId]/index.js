@@ -1,4 +1,5 @@
 import React from 'react'
+import Head from 'next/head'
 import Image from 'next/image'
 import Identicon from "identicon.js"
 import { Box, VStack, Heading } from '@chakra-ui/react'
@@ -6,19 +7,23 @@ import SoundGrid from '../../components/SoundGrid'
 import { contractAddress, contractAbi } from '../../config'
 import { ethers } from 'ethers'
 import { shortAddress } from '../../utils/helpers'
-import Jazzicon from '@metamask/jazzicon'
 import axios from 'axios'
+import Davatar from '@davatar/react'
 
 
 export default function index(props) {
     return (
-        <Box>
+        <>
+            <Head>
+                <title>Profile - {props.userId} Elixir Sound Library</title>
+            </Head>
             <VStack pt={10}>
-                <Image height="100px" width="100px" layout="fixed" alt="identicon" src={`data:image/png;base64,${new Identicon(props.userId, 100).toString()}`} className="rounded"/>
+                {/* <Image height="100px" width="100px" layout="fixed" alt="identicon" src={`data:image/png;base64,${new Identicon(props.userId, 100).toString()}`} className="rounded"/> */}
+                <Davatar size={75} address={props.userId}/>
                 <Heading>{shortAddress(props.userId)}</Heading>
             </VStack>
             <SoundGrid sounds={props.tokens}/>
-        </Box>
+        </>
     )
 }
 

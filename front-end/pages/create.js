@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import Head from 'next/head'
-import {VStack, Button, Input, Text, Flex, Spinner} from '@chakra-ui/react'
+import {VStack, Button, Input, Text, Flex, Spinner, Alert, AlertDescription} from '@chakra-ui/react'
 import { ethers } from 'ethers'
 import { useWeb3 } from '../context/useWeb3'
 import { contractAddress, contractAbi } from '../config'
@@ -31,20 +31,26 @@ export default function Create() {
 
     const [formInput, setFormInput] = useState({ name: null, price: null, file: null })
     const [isLoading, setIsLoading] = useState(false)
+    const [errorMsg, setErrorMsg] = useState(null)
     const audioRef = useRef()
 
+
     async function upload() {
-
-        setIsLoading(true)
-
 
         const { name, price, file } = formInput
         
 
-        if (!name || !price || !file || !web3Provider) {
-            alert('Please fill out all fields.')
+        if (!name || !price || !file) {
+            setErrorMsg("Please fill out all fields.")
             return
         } 
+
+        if (!web3Provider) {
+            setErrorMsg("Please connect your wallet.")
+            return
+        }
+
+        setIsLoading(true)
 
         const fileHash = await uploadAudioFile(file)
 
@@ -69,7 +75,8 @@ export default function Create() {
             console.log(url)
 
         } catch(error) {
-            console.log(error)
+            setErrorMsg(error)
+            return
         }
 
         mintSound(url, price)
@@ -101,11 +108,10 @@ export default function Create() {
                 }
             )
             const url = `https://ipfs.infura.io/ipfs/${added.path}`
-            console.log(url)
             return url
 
         } catch (error) {
-            console.log("Error uploading audio file: ", error)
+            setErrorMsg(error)
         }
 
     }
@@ -114,7 +120,6 @@ export default function Create() {
         const file = e.target.files[0]
         setFormInput({... formInput, file: file})
         try {
-            const url = window.URL.createObjectURL(file)
             audioRef.current.style.display = "block"
             audioRef.current.src = URL.createObjectURL(file)
             audioRef.current.load()
@@ -134,6 +139,13 @@ export default function Create() {
                 <title>Create | Elixir Sound Library</title>
             </Head>
             <VStack py={20} px={10} spacing={8}maxWidth={700} mx="auto"> 
+                {
+                    errorMsg && (
+                        <Alert status='error'>
+                            <AlertDescription>{errorMsg}</AlertDescription>
+                        </Alert>
+                    )
+                }
                 <VStack width="100%">
                     <Input py={6} placeholder="Sound Name" onChange={e => setFormInput({ ...formInput, name: e.target.value})}/>
                     <Input py={6} placeholder="Price in ETH" onChange={e => setFormInput({ ...formInput, price: e.target.value})}/>
@@ -142,6 +154,7 @@ export default function Create() {
                 <input type="file" accept="audio/*" onChange={handleFile}/>
                 <Button  py={6} width="100%" color="white" bg="pink.500" _hover={{bg: "pink.300"}} onClick={upload}>Upload</Button>
                 <Text fontSize="sm">Elixir Sound Library takes a 2% licensing fee</Text>
+
                 <audio ref={audioRef} controls style={{display: "none"}}></audio>
             </VStack>
         </>

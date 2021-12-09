@@ -57,9 +57,8 @@ export default function Index(props) {
 
                 <Flex direction="column" w="50%">
                     <Text fontWeight="semibold" fontSize="3xl">{props.token.name}</Text>
-                    {/* <Text>Samples: {props.token.licenseCount}</Text> */}
-                    <Text fontSize="xl" fontWeight="semibold">Total Samples: <Text as="span" mr={8} fontSize="xl" fontWeight="normal" textColor="gray.500">{props.token.licenseCount}</Text></Text>
-                    <Text>File type: </Text>
+                    <Text fontSize="xl" fontWeight="semibold" py={3}>Total Samples: <Text as="span" mr={8} fontSize="xl" fontWeight="normal" textColor="gray.500">{props.token.licenseCount}</Text></Text>
+                    <Text>File type: {props.token.type}</Text>
                 </Flex>
                 
             </Flex>
@@ -123,7 +122,8 @@ export async function getStaticProps(context) {
         name: metadata.data.name,
         creator: sound.creator,
         tokenURI: metadata.data.audio,
-        licenseCount: sound.licensees.length
+        licenseCount: sound.licensees.length,
+        type: metadata.data.type
     }
 
 
