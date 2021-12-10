@@ -7,7 +7,6 @@ import { contractAddress, contractAbi } from '../config'
 import { create as ipfsClient}  from 'ipfs-http-client'
 import { useRouter } from 'next/router'
 
-
 const id = process.env.NEXT_PUBLIC_INFURA_IPFS_ID
 const secret = process.env.NEXT_PUBLIC_INFURA_IPFS_SECRET
 
