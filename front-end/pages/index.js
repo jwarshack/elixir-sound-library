@@ -1,13 +1,10 @@
 
 import { useEffect } from 'react'
 import Head from 'next/head'
-import { Heading, VStack } from '@chakra-ui/layout'
+import { VStack } from '@chakra-ui/layout'
 import Hero from '../components/Hero'
-import { useWeb3 } from '../context/useWeb3'
 
 export default function Home() {
-
-  const { web3Provider } = useWeb3()
 
   return (
     <>

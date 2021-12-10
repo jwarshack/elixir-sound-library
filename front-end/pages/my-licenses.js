@@ -16,7 +16,7 @@ export default function Licenses() {
 
     useEffect(() => {
         loadSounds()
-    }, [web3Provider])
+    }, [])
 
     async function loadSounds() {
         if (web3Provider) {

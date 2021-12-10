@@ -24,17 +24,6 @@ export default function Navbar() {
         setShowMobileNav(!prevValue)
     }
 
-    // useEffect(() => {
-    //     if (web3Provider) {
-    //         const signer = web3Provider.getSigner()
-    //         const address = signer.getAddress()
-    //         console.log(address)
-    //         setWalletAddress(address)
-    //     }
-        
-    // }, [web3Provider])
-
-
     async function connectWallet() {
         if(!window.ethereum) {
             toast({

@@ -112,6 +112,7 @@ export default function Create() {
 
         } catch (error) {
             setErrorMsg(error)
+            setIsLoading(false)
         }
 
     }
