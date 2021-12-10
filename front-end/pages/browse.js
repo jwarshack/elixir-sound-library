@@ -21,7 +21,8 @@ export default function Browse(props) {
 
 export async function getStaticProps() {
 
-    const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_ALCHEMY_RINKEBY_URL)
+    // const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_ALCHEMY_RINKEBY_URL)
+    const provider = new ethers.providers.InfuraProvider("rinkeby", process.env.NEXT_PUBLIC_ALCHEMY_RINKEBY_URL)
     const soundLibrary = new ethers.Contract(contractAddress, contractAbi, provider)
     const soundCount = await soundLibrary.soundCount()
     const data = []

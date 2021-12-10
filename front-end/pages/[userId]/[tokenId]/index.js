@@ -108,7 +108,7 @@ export default function Index(props) {
 }
 
 export async function getStaticPaths() {
-    const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_ALCHEMY_RINKEBY_URL)
+    const provider = new ethers.providers.InfuraProvider("rinkeby", process.env.NEXT_PUBLIC_ALCHEMY_RINKEBY_URL)
     const soundLibrary = new ethers.Contract(contractAddress, contractAbi, provider)
     const tokenCount = await soundLibrary.soundCount()
     const data = []
@@ -136,7 +136,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
     const tokenId = context.params.tokenId
-    const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_ALCHEMY_RINKEBY_URL)
+    const provider = new ethers.providers.InfuraProvider("rinkeby", process.env.NEXT_PUBLIC_ALCHEMY_RINKEBY_URL)
     const soundLibrary = new ethers.Contract(contractAddress, contractAbi, provider)
     const sound = await soundLibrary.sound(tokenId)
     let price = ethers.utils.formatUnits(sound.price.toString(), 'ether')
