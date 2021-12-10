@@ -19,8 +19,8 @@ export default function SoundCard({ sound }) {
         <Flex rounded="xl" direction="column" bg="white" overflow="hidden" border="1px" borderColor="gray.200" >
             <AudioPlayer src={sound.tokenURI} />
             <Flex justify="space-between" p={4} bg="gray.100">
-                <Box>
-                    <Text fontSize="16px" fontWeight="semibold">{sound.name}</Text>
+                <Box w="75%">
+                    <Text fontSize="16px" whiteSpace="nowrap" textOverflow="ellipsis" overflow="hidden" fontWeight="semibold">{sound.name}</Text>
                     <NextLink href={`/${encodeURIComponent(sound.creator)}`}><Flex align="center"><Davatar address={sound.creator} size={15} /><Link _hover={{color: "pink.500"}} fontSize="16px" ml={2}>{shortAddress(sound.creator)}</Link></Flex></NextLink>
                 </Box>
                 <Box>
