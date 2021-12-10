@@ -4,9 +4,6 @@ import { shortAddress } from "../utils/helpers"
 import dynamic from 'next/dynamic'
 import Davatar from '@davatar/react'
 
-
-
-
 export default function SoundCard({ sound }) {
 
     const AudioPlayer = dynamic(
