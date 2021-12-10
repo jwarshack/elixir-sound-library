@@ -58,6 +58,7 @@ export default function MySounds() {
     }
 
     if (isLoading) return <Flex justify="center" p={20}><Spinner size="xl"/></Flex>
+    if (!web3Provider) return <Text p={8} fontSize="3xl">Please connect your wallet to see your created sounds.</Text>
     if (!sounds.length || !web3Provider) return <Text p={8} fontSize="3xl">There are no sounds to display</Text>
 
     return (

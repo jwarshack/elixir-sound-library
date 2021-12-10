@@ -148,7 +148,7 @@ export default function Create() {
                 }
                 <VStack width="100%">
                     <Input py={6} placeholder="Sound Name" onChange={e => setFormInput({ ...formInput, name: e.target.value})}/>
-                    <Input py={6} placeholder="Price in ETH" onChange={e => setFormInput({ ...formInput, price: e.target.value})}/>
+                    <Input py={6} placeholder="Price in ETH" type="number" onChange={e => setFormInput({ ...formInput, price: e.target.value})}/>
                 </VStack>
 
                 <input type="file" accept="audio/*" onChange={handleFile}/>

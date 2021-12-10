@@ -39,7 +39,8 @@ export default function Licenses() {
                     name: metadata.data.name,
                     creator: i.creator,
                     tokenURI: metadata.data.audio,
-                    licenseCount: i.licensees.length
+                    licenseCount: i.licensees.length,
+                    type: metadata.data.type
                 }
                 return sound
 
@@ -51,7 +52,8 @@ export default function Licenses() {
     }
 
     if (isLoading) return <Flex justify="center" p={20}><Spinner size="xl"/></Flex>
-    if (!sounds.length || !web3Provider) return <Text p={8} fontSize="3xl">There are no sounds to display</Text>
+    if (!web3Provider) return <Text p={8} fontSize="3xl">Please connect your wallet to see your licensed sounds.</Text>
+    if (!sounds.length) return <Text p={8} fontSize="3xl">There are no sounds to display.</Text>
 
     return (
         <>
