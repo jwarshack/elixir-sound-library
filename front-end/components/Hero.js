@@ -1,11 +1,11 @@
 import { Button } from '@chakra-ui/button'
-import { Flex, Grid, Link } from '@chakra-ui/layout'
+import { Grid } from '@chakra-ui/layout'
 import NextLink from 'next/link'
 import React from 'react'
 
 export default function Hero() {
     return (
-        <Grid bgImage="../public/hero.png"
+        <Grid bgImage="../public/img/hero.png"
             templateColumns={{sm:"repeat(1, 1fr)", md: "repeat(2, 1fr)"}}
             p={10}
             gap={10}
