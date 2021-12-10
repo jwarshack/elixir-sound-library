@@ -1,7 +1,5 @@
 import React from 'react'
 import Head from 'next/head'
-import Image from 'next/image'
-import Identicon from "identicon.js"
 import { Box, VStack, Heading } from '@chakra-ui/react'
 import SoundGrid from '../../components/SoundGrid'
 import { contractAddress, contractAbi } from '../../config'

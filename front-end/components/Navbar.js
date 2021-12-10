@@ -1,7 +1,7 @@
 import { Flex, Box, Link, VStack, useToast, Button, Text} from "@chakra-ui/react"
 import NextLink from 'next/link'
 import Image from "next/image"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { ethers } from "ethers"
 import { shortAddress } from '../utils/helpers'
 import { useWeb3 } from "../context/useWeb3"
