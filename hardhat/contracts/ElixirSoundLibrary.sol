@@ -5,33 +5,39 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract ElixirSoundLibrary is ERC721 {
     
-    uint public soundCount;
+    uint256 public soundCount;
     
     struct Sound {
-        uint id;
+        uint256 id;
         string uri;
-        uint price;
+        uint256 price;
         address payable creator;
         address[] licensees;
     }
 
     event SoundCreated (
-        uint indexed id,
+        uint256 indexed id,
         string uri,
-        uint price,
+        uint256 price,
         address creator
     );
 
     event SoundLicensed (
-        uint indexed id,
-        uint price,
+        uint256 indexed id,
+        uint256 price,
         address creator,
         address licensee
     );
+
+    event PriceUpdated (
+        uint256 indexed id,
+        uint256 price,
+        address creator
+    );
     
-    mapping(uint => Sound) private sounds;
-    mapping(address => uint[]) private creatorToSound;
-    mapping(address => uint[]) private licenseeToSound;
+    mapping(uint256 => Sound) private sounds;
+    mapping(address => uint256[]) private creatorToSound;
+    mapping(address => uint256[]) private licenseeToSound;
     mapping(uint256 => mapping(address => bool)) isLicensed;
     
     address owner;
@@ -40,8 +46,8 @@ contract ElixirSoundLibrary is ERC721 {
         owner = msg.sender;
     }
     
-    function mintSound(string memory _uri, uint _price) public {
-        uint _currentId = soundCount;
+    function mintSound(string memory _uri, uint256 _price) public {
+        uint256 _currentId = soundCount;
         Sound memory _newSound;
         _newSound.id = _currentId;
         _newSound.uri = _uri;
@@ -55,10 +61,10 @@ contract ElixirSoundLibrary is ERC721 {
         emit SoundCreated(_currentId, _uri, _price, msg.sender);
     }
     
-    function licenseSound(uint _id) public payable {
+    function licenseSound(uint256 _id) public payable {
         require(!isLicensed[_id][msg.sender], "Sound is already licensed");
-        uint _price = sounds[_id].price;
-        uint _fee = _price / 50;
+        uint256 _price = sounds[_id].price;
+        uint256 _fee = _price / 50;
         address _creator = sounds[_id].creator;
         require(msg.sender != _creator, "Licensee cannot be the creator.");
         require(msg.value == _price, "Please submit the correct amount of ether");
@@ -72,18 +78,29 @@ contract ElixirSoundLibrary is ERC721 {
         emit SoundLicensed(_id, _price, _creator, msg.sender);
     }
     
-    function sound(uint _id) public view returns (Sound memory) {
+    function sound(uint256 _id) public view returns (Sound memory) {
         return sounds[_id];
     }
 
-    function creatorSounds(address _creator) public view returns (uint[] memory) {
+    function creatorSounds(address _creator) public view returns (uint256[] memory) {
         return creatorToSound[_creator];
     }
 
-    function licenses() public view returns (uint[] memory) {
+    function licenses() public view returns (uint256[] memory) {
         return licenseeToSound[msg.sender];
     }
 
+    function updatePrice(uint256 _id, uint256 _price) public {
+        require(msg.sender == sounds[_id].creator, "Only the creator can update the price.");
+        sounds[_id].price = _price;
+
+        emit PriceUpdated(_id, _price, msg.sender);
+    }
+
+    function tokenURI(uint256 _id) public view virtual override returns (string memory) {
+        require(_exists(_id), "ERC721Metadata: URI query for nonexistent token");
+        return sounds[_id].uri;
+    }
     
 
 }
