@@ -3,7 +3,7 @@ const hre = require("hardhat");
 
 async function main() {
 
-  const Elixir = await hre.ethers.getContractFactory("ElixirSoundLibrary");
+  const Elixir = await hre.ethers.getContractFactory("MappingElixir");
   const elixir = await Elixir.deploy();
 
   await elixir.deployed();

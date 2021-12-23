@@ -1,44 +1,44 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract ElixirSoundLibrary is ERC721 {
-    
-    uint256 public soundCount;
-    
-    struct Sound {
-        uint256 id;
-        string uri;
+contract ElixirSoundLibrary is ERC721URIStorage, ReentrancyGuard {
+    using Counters for Counters.Counter;
+
+    Counters.Counter public tokenId;
+
+    struct SoundData {
         uint256 price;
-        address payable creator;
-        address[] licensees;
+        string tokenURI;
     }
 
     event SoundCreated (
-        uint256 indexed id,
-        string uri,
+        uint256 indexed tokenId,
+        string tokenURI,
         uint256 price,
-        address creator
+        address indexed owner
     );
 
     event SoundLicensed (
-        uint256 indexed id,
+        uint256 indexed tokenId,
         uint256 price,
-        address creator,
-        address licensee
+        address owner,
+        address indexed licensee
     );
 
     event PriceUpdated (
-        uint256 indexed id,
+        uint256 indexed tokenId,
         uint256 price,
-        address creator
+        address owner
     );
     
-    mapping(uint256 => Sound) private sounds;
-    mapping(address => uint256[]) private creatorToSound;
-    mapping(address => uint256[]) private licenseeToSound;
-    mapping(uint256 => mapping(address => bool)) isLicensed;
+    mapping(uint256 => uint256) private tokenIdToPrice;
+    mapping(uint256 => address[]) private tokenIdToLicensees;
+    mapping(address => uint256[]) private licenseeToTokenIds;
+    mapping(uint256 => mapping(address => bool)) private isLicensed;
     
     address owner;
     
@@ -46,61 +46,46 @@ contract ElixirSoundLibrary is ERC721 {
         owner = msg.sender;
     }
     
-    function mintSound(string memory _uri, uint256 _price) public {
-        uint256 _currentId = soundCount;
-        Sound memory _newSound;
-        _newSound.id = _currentId;
-        _newSound.uri = _uri;
-        _newSound.price = _price;
-        _newSound.creator = payable(msg.sender);
-        sounds[_currentId] = _newSound;
-        creatorToSound[msg.sender].push(_currentId);    
-        _safeMint(msg.sender, _currentId);
-        soundCount++;        
+    function mintSound(SoundData memory _data) external nonReentrant {
+        uint256 currentId = tokenId.current();
+        tokenIdToPrice[currentId] = _data.price;
+        _safeMint(msg.sender, currentId);
+        _setTokenURI(currentId, _data.tokenURI);
+        tokenId.increment();        
 
-        emit SoundCreated(_currentId, _uri, _price, msg.sender);
+        emit SoundCreated(currentId, _data.tokenURI, _data.price, msg.sender);
     }
     
-    function licenseSound(uint256 _id) public payable {
-        require(!isLicensed[_id][msg.sender], "Sound is already licensed");
-        uint256 _price = sounds[_id].price;
+    function licenseSound(uint256 _tokenId) external payable {
+        require(!isLicensed[_tokenId][msg.sender], "Sound is already licensed");
+        uint256 _price = tokenIdToPrice[_tokenId];
         uint256 _fee = _price / 50;
-        address _creator = sounds[_id].creator;
-        require(msg.sender != _creator, "Licensee cannot be the creator.");
+        address _owner = ownerOf(_tokenId);
+        require(msg.sender != _owner, "Licensee cannot be the owner");
         require(msg.value == _price, "Please submit the correct amount of ether");
-        sounds[_id].licensees.push(msg.sender);
-        licenseeToSound[msg.sender].push(_id);
-        isLicensed[_id][msg.sender] = true;
+        tokenIdToLicensees[_tokenId].push(msg.sender);
+        licenseeToTokenIds[msg.sender].push(_tokenId);
+        isLicensed[_tokenId][msg.sender] = true;
 
-        payable(_creator).transfer(_price - _fee);
+        payable(_owner).transfer(_price - _fee);
         payable(owner).transfer(_fee);
 
-        emit SoundLicensed(_id, _price, _creator, msg.sender);
+        emit SoundLicensed(_tokenId, _price, _owner, msg.sender);
     }
     
-    function sound(uint256 _id) public view returns (Sound memory) {
-        return sounds[_id];
+    function sound(uint256 _tokenId) external view returns (uint256, uint256, string memory, address) {
+        return (_tokenId, tokenIdToPrice[_tokenId], tokenURI(_tokenId), ownerOf(_tokenId));
     }
 
-    function creatorSounds(address _creator) public view returns (uint256[] memory) {
-        return creatorToSound[_creator];
+    function licenses() external view returns (uint256[] memory) {
+        return licenseeToTokenIds[msg.sender];
     }
 
-    function licenses() public view returns (uint256[] memory) {
-        return licenseeToSound[msg.sender];
-    }
+    function updatePriceMapping(uint256 _tokenId, uint256 _price) external {
+        require(msg.sender == ownerOf(_tokenId), "Only the owner can update the price");
+        tokenIdToPrice[_tokenId] = _price;
 
-    function updatePrice(uint256 _id, uint256 _price) public {
-        require(msg.sender == sounds[_id].creator, "Only the creator can update the price.");
-        sounds[_id].price = _price;
-
-        emit PriceUpdated(_id, _price, msg.sender);
+        emit PriceUpdated(_tokenId, _price, msg.sender);
     }
-
-    function tokenURI(uint256 _id) public view virtual override returns (string memory) {
-        require(_exists(_id), "ERC721Metadata: URI query for nonexistent token");
-        return sounds[_id].uri;
-    }
-    
 
 }
