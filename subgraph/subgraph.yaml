@@ -1,0 +1,33 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Elixir
+    network: rinkeby
+    source:
+      address: "0x23e045Fb23b9b0Bf8bC029badeF2bEA9D5316369"
+      abi: Elixir
+      startBlock: 9866209
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - PriceUpdated
+        - SoundCreated
+        - SoundLicensed
+        - Transfer
+      abis:
+        - name: Elixir
+          file: ./abis/Elixir.json
+      eventHandlers:
+        - event: PriceUpdated(indexed uint256,uint256,address)
+          handler: handlePriceUpdated
+        - event: SoundCreated(indexed uint256,string,uint256,indexed address)
+          handler: handleSoundCreated
+        - event: SoundLicensed(indexed uint256,uint256,address,indexed address)
+          handler: handleSoundLicensed
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/mapping.ts
