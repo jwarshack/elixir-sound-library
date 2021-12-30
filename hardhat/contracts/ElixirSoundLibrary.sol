@@ -46,7 +46,7 @@ contract ElixirSoundLibrary is ERC721URIStorage, ReentrancyGuard {
         owner = msg.sender;
     }
     
-    function mintSound(SoundData memory _data) external nonReentrant {
+    function mintSound(SoundData memory _data) external  {
         uint256 currentId = tokenCounter.current();
         tokenIdToPrice[currentId] = _data.price;
         
@@ -76,7 +76,7 @@ contract ElixirSoundLibrary is ERC721URIStorage, ReentrancyGuard {
         emit SoundLicensed(_tokenId, _price, _tokenOwner, msg.sender);
     }
     
-    function sound(uint256 _tokenId) external view returns (uint256 tokenId, uint256 price, string memory _tokenURI, address tokenOwner, address[] memory licensees) {
+    function sound(uint256 _tokenId) external view returns (uint256 tokenId, uint256 price, string memory uri, address tokenOwner, address[] memory licensees) {
         return (_tokenId, tokenIdToPrice[_tokenId], tokenURI(_tokenId), ownerOf(_tokenId), tokenIdToLicensees[_tokenId]);
     }
 
