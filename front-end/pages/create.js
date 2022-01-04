@@ -87,7 +87,7 @@ export default function Create() {
         if(web3Provider) {
             const signer = web3Provider.getSigner()
             const contract = new ethers.Contract(contractAddress, contractAbi, signer);
-            const tx = await contract.mintSound(url, ethers.utils.parseEther(price))
+            const tx = await contract.mintSound({price: ethers.utils.parseEther(price), tokenURI: url})
 
             await tx.wait()
             setIsLoading(false)

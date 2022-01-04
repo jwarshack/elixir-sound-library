@@ -8,6 +8,8 @@ import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useWeb3 } from '../../../context/useWeb3'
 import axios from 'axios'
+import { gql } from '@apollo/client'
+import client from '../../../apollo-client'
 
 
 import { contractAddress, contractAbi } from '../../../config'
@@ -108,21 +110,28 @@ export default function Index(props) {
 }
 
 export async function getStaticPaths() {
-    const provider = new ethers.providers.InfuraProvider("rinkeby", process.env.NEXT_PUBLIC_ALCHEMY_RINKEBY_URL)
-    const soundLibrary = new ethers.Contract(contractAddress, contractAbi, provider)
-    const tokenCount = await soundLibrary.soundCount()
-    const data = []
-    for (var i = 0; i < tokenCount; i++) {
-        const token = await soundLibrary.sound(i)
-        data.push(token)
-    }
-    console.log("sound",data)
 
-    let paths = data.map((token) => {
+    const { data } = await client.query({
+        query: gql`
+            query {
+                sounds {
+                  id
+                  tokenID
+                  owner {
+                    id
+                  }
+                }
+              }     
+        `
+    })
+
+
+    let paths = data.sounds.map((sound) => {
+
         return {
             params: {
-                userId: token.creator,
-                tokenId: token.id.toString()
+                userId: sound.owner.id,
+                tokenId: sound.tokenID
             }
         }
     })
@@ -136,20 +145,35 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
     const tokenId = context.params.tokenId
-    const provider = new ethers.providers.InfuraProvider("rinkeby", process.env.NEXT_PUBLIC_ALCHEMY_RINKEBY_URL)
-    const soundLibrary = new ethers.Contract(contractAddress, contractAbi, provider)
-    const sound = await soundLibrary.sound(tokenId)
-    let price = ethers.utils.formatUnits(sound.price.toString(), 'ether')
-    let metadata = await axios.get(sound.uri)
+    const userId = context.params.userId
+    const { data } = await client.query({
+        query: gql`
+            query {
+                sounds(where: {tokenID: ${tokenId}}) {
+                  id
+                  tokenID
+                  tokenURI
+                  price
+                  owner {
+                    id
+                  }
+                  licenseCount
+                }
+              }     
+        `
+    })
+    let sound = data.sounds[0]
+    let price = ethers.utils.formatUnits(sound.price, 'ether')
+    let metadata = await axios.get(sound.tokenURI)
 
     let thisSound = {
         
         price,
-        tokenId: sound.id.toNumber(),
+        tokenId: sound.tokenID,
         name: metadata.data.name,
-        creator: sound.creator,
+        creator: userId,
         tokenURI: metadata.data.audio,
-        licenseCount: sound.licensees.length,
+        licenseCount: sound.licenseCount.toString(),
         type: metadata.data.type
     }
 

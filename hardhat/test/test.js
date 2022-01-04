@@ -55,27 +55,46 @@ describe("Elixir Sound Library", function () {
     const [deployer, creator, licensee, owner, licensee2] = await hre.ethers.getSigners()
 
 
-    let provider = ethers.getDefaultProvider();
+    let provider = ethers.provider;
 
 
     let initialDeployerBal = await provider.getBalance(deployer.address)
 
-    let newDeployerBal
-
     let initialLicenseeBal = await provider.getBalance(licensee.address)
-    let newLicenseeBal
+
+    let initialOwnerBal = await provider.getBalance(owner.address)
 
 
-    console.log(initialDeployerBal.toString())
-    console.log(initialLicenseeBal.toString())
+
+
 
     await elixir.connect(licensee).licenseSound('0', {value: hre.ethers.utils.parseEther('0.1')})
     await elixir.connect(licensee2).licenseSound('0', {value: hre.ethers.utils.parseEther('0.1')})
 
-
     const sound = await elixir.sound(0)
 
     expect(sound.licensees.length).to.equal(2)
+
+
+    let newDeployerBal = await provider.getBalance(deployer.address)
+
+    let newLicenseeBal = await provider.getBalance(licensee.address)
+
+    let newOwnerBal = await provider.getBalance(owner.address)
+
+    console.log("Deployer")
+    console.log(hre.ethers.utils.formatEther(initialDeployerBal).toString())
+    console.log(hre.ethers.utils.formatEther(newDeployerBal).toString())
+
+    console.log("Licensee")
+    console.log(hre.ethers.utils.formatEther(initialLicenseeBal).toString())
+    console.log(hre.ethers.utils.formatEther(newLicenseeBal).toString())
+
+    console.log("Owner")
+    console.log(hre.ethers.utils.formatEther(initialOwnerBal).toString())
+    console.log(hre.ethers.utils.formatEther(newOwnerBal).toString())
+
+
 
 
     // Payment
@@ -113,14 +132,6 @@ describe("Elixir Sound Library", function () {
 
 
   })
-
-  it ("should change balances", async function() {
-    const [deployer, creator, licensee] = await hre.ethers.getSigners()
-
-    await expect(await elixir.connect(licensee).licenseSound('0', {value: hre.ethers.utils.parseEther('0.1')})).to.changeEtherBalance(deployer)
-
-  })
-
   
 
 

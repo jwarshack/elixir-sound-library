@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Head from 'next/head'
-import { Box, VStack, Heading } from '@chakra-ui/react'
+import { VStack, Heading } from '@chakra-ui/react'
 import SoundGrid from '../../components/SoundGrid'
-import { contractAddress, contractAbi } from '../../config'
 import { ethers } from 'ethers'
 import { shortAddress } from '../../utils/helpers'
 import axios from 'axios'
 import Davatar from '@davatar/react'
+import { gql } from '@apollo/client'
+import client from '../../apollo-client'
 
 
 export default function index(props) {
+
     return (
         <>
             <Head>
@@ -25,22 +27,27 @@ export default function index(props) {
 }
 
 export async function getStaticPaths() {
-    const provider = new ethers.providers.InfuraProvider("rinkeby", process.env.NEXT_PUBLIC_ALCHEMY_RINKEBY_URL)
-    const soundLibrary = new ethers.Contract(contractAddress, contractAbi, provider)
-    const tokenCount = await soundLibrary.soundCount()
-    const data = []
-    for (var i = 0; i < tokenCount; i++) {
-        const token = await soundLibrary.sound(i)
-        data.push(token)
-    }
+    const { data } = await client.query({
+        query: gql`
+            query {
+                users {
+                  id
+                }
+              }     
+        `
+    })
 
-    let paths = data.map((token) => {
+    console.log(data)
+
+    let paths = data.users.map((user) => {
         return {
             params: {
-                userId: token.creator
+                userId: user.id.toString()
             }
         }
     })
+
+    console.log(paths)
 
     return {
         paths,
@@ -48,36 +55,37 @@ export async function getStaticPaths() {
     }
 }
 
-
-
 export async function getStaticProps(context) {
     const userId = context.params.userId
-    const provider = new ethers.providers.InfuraProvider("rinkeby", process.env.NEXT_PUBLIC_ALCHEMY_RINKEBY_URL)
-    const soundLibrary = new ethers.Contract(contractAddress, contractAbi, provider)
-    const creatorSounds = await soundLibrary.creatorSounds(userId)
-    const data = []
-    for (var i = 0; i < creatorSounds.length; i++) {
-        let tokenId = creatorSounds[i]
-        const token = await soundLibrary.sound(tokenId)
-        data.push(token)
-    }
+    const { data } = await client.query({
+        query: gql`
+            query {
+                users(where: {id: "${userId}"}) {
+                    id
+                    sounds {
+                        tokenID
+                        tokenURI
+                        price
+                        licenseCount
+                    }
+                }
+              }     
+        `
+    })
 
-    let theseSounds = await Promise.all(data.map(async i => {
-        let price = ethers.utils.formatUnits(i.price.toString(), 'ether')
-        let metadata = await axios.get(i.uri)
+    let theseSounds = await Promise.all(data.users[0].sounds.map(async i => {
+        let price = ethers.utils.formatUnits(i.price, 'ether')
+        let metadata = await axios.get(i.tokenURI)
+
         let sound = {
-            price,
-            tokenId: i.id.toNumber(),
             name: metadata.data.name,
-            creator: i.creator,
+            tokenId: i.tokenID.toString(),
+            price,
             tokenURI: metadata.data.audio,
-            licenseCount: i.licensees.length
+            creator: userId,
+            licenseCount: i.licenseCount.toString()
         }
-        console.log(sound)
-
         return sound
-
-
     }))
 
     return {

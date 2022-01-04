@@ -2,10 +2,9 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract ElixirSoundLibrary is ERC721URIStorage, ReentrancyGuard {
+contract ElixirSoundLibrary is ERC721URIStorage {
     using Counters for Counters.Counter;
 
     Counters.Counter public tokenCounter;
@@ -40,7 +39,7 @@ contract ElixirSoundLibrary is ERC721URIStorage, ReentrancyGuard {
     mapping(address => uint256[]) private licenseeToTokenIds;
     mapping(uint256 => mapping(address => bool)) private isLicensed;
     
-    address owner;
+    address private owner;
     
     constructor() ERC721("Elixir", "ELIX") {
         owner = msg.sender;
@@ -58,7 +57,7 @@ contract ElixirSoundLibrary is ERC721URIStorage, ReentrancyGuard {
         emit SoundCreated(currentId, _data.tokenURI, _data.price, msg.sender);
     }
     
-    function licenseSound(uint256 _tokenId) external payable nonReentrant {
+    function licenseSound(uint256 _tokenId) external payable {
         require(!isLicensed[_tokenId][msg.sender], "Sound is already licensed");
         uint256 _price = tokenIdToPrice[_tokenId];
         uint256 _fee = _price / 50;
@@ -75,6 +74,13 @@ contract ElixirSoundLibrary is ERC721URIStorage, ReentrancyGuard {
 
         emit SoundLicensed(_tokenId, _price, _tokenOwner, msg.sender);
     }
+
+    function updatePrice(uint256 _tokenId, uint256 _price) external {
+        require(msg.sender == ownerOf(_tokenId), "Only the owner can update the price");
+        tokenIdToPrice[_tokenId] = _price;
+
+        emit PriceUpdated(_tokenId, _price, msg.sender);
+    }
     
     function sound(uint256 _tokenId) external view returns (uint256 tokenId, uint256 price, string memory uri, address tokenOwner, address[] memory licensees) {
         return (_tokenId, tokenIdToPrice[_tokenId], tokenURI(_tokenId), ownerOf(_tokenId), tokenIdToLicensees[_tokenId]);
@@ -82,13 +88,6 @@ contract ElixirSoundLibrary is ERC721URIStorage, ReentrancyGuard {
 
     function licenses() external view returns (uint256[] memory) {
         return licenseeToTokenIds[msg.sender];
-    }
-
-    function updatePrice(uint256 _tokenId, uint256 _price) external {
-        require(msg.sender == ownerOf(_tokenId), "Only the owner can update the price");
-        tokenIdToPrice[_tokenId] = _price;
-
-        emit PriceUpdated(_tokenId, _price, msg.sender);
     }
 
 }

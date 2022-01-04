@@ -1,4 +1,4 @@
-export const contractAddress = "0xD2adee0c8754DEc352E21ce9956900A0d7dc7e52"
+export const contractAddress = "0x25F8FdC72816CC52b9b1d402dD95007D3dFdb55D"
 export const contractAbi = [
   {
     "inputs": [],
@@ -61,14 +61,8 @@ export const contractAbi = [
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "id",
+        "name": "tokenId",
         "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "uri",
-        "type": "string"
       },
       {
         "indexed": false,
@@ -79,7 +73,38 @@ export const contractAbi = [
       {
         "indexed": false,
         "internalType": "address",
-        "name": "creator",
+        "name": "owner",
+        "type": "address"
+      }
+    ],
+    "name": "PriceUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "tokenURI",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
         "type": "address"
       }
     ],
@@ -92,7 +117,7 @@ export const contractAbi = [
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "id",
+        "name": "tokenId",
         "type": "uint256"
       },
       {
@@ -104,11 +129,11 @@ export const contractAbi = [
       {
         "indexed": false,
         "internalType": "address",
-        "name": "creator",
+        "name": "owner",
         "type": "address"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
         "name": "licensee",
         "type": "address"
@@ -182,25 +207,6 @@ export const contractAbi = [
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_creator",
-        "type": "address"
-      }
-    ],
-    "name": "creatorSounds",
-    "outputs": [
-      {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
         "name": "tokenId",
         "type": "uint256"
@@ -245,7 +251,7 @@ export const contractAbi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_id",
+        "name": "_tokenId",
         "type": "uint256"
       }
     ],
@@ -270,14 +276,21 @@ export const contractAbi = [
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "_uri",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_price",
-        "type": "uint256"
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "price",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "tokenURI",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct ElixirSoundLibrary.SoundData",
+        "name": "_data",
+        "type": "tuple"
       }
     ],
     "name": "mintSound",
@@ -390,56 +403,36 @@ export const contractAbi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_id",
+        "name": "_tokenId",
         "type": "uint256"
       }
     ],
     "name": "sound",
     "outputs": [
       {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "id",
-            "type": "uint256"
-          },
-          {
-            "internalType": "string",
-            "name": "uri",
-            "type": "string"
-          },
-          {
-            "internalType": "uint256",
-            "name": "price",
-            "type": "uint256"
-          },
-          {
-            "internalType": "address payable",
-            "name": "creator",
-            "type": "address"
-          },
-          {
-            "internalType": "address[]",
-            "name": "licensees",
-            "type": "address[]"
-          }
-        ],
-        "internalType": "struct ElixirSoundLibrary.Sound",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "soundCount",
-    "outputs": [
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "price",
         "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "uri",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "tokenOwner",
+        "type": "address"
+      },
+      {
+        "internalType": "address[]",
+        "name": "licensees",
+        "type": "address[]"
       }
     ],
     "stateMutability": "view",
@@ -472,6 +465,19 @@ export const contractAbi = [
         "internalType": "string",
         "name": "",
         "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "tokenCounter",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_value",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -515,6 +521,24 @@ export const contractAbi = [
       }
     ],
     "name": "transferFrom",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_price",
+        "type": "uint256"
+      }
+    ],
+    "name": "updatePrice",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

@@ -45,7 +45,7 @@ export default function MySounds() {
                     name: metadata.data.name,
                     creator: i.creator,
                     tokenURI: metadata.data.audio,
-                    licenseCount: i.licensees.length
+                    licenseCount: i.licenseCount.toString()
                 }
 
                 return sound

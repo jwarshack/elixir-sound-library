@@ -3,6 +3,8 @@ import Head from 'next/head'
 import SoundGrid from '../components/SoundGrid'
 import { ethers } from 'ethers'
 import axios from 'axios'
+import { gql } from '@apollo/client'
+import client from '../apollo-client'
 
 import { contractAddress, contractAbi } from '../config'
 
@@ -22,33 +24,36 @@ export default function popular(props) {
 
 export async function getStaticProps() {
 
-    const provider = new ethers.providers.InfuraProvider("rinkeby", process.env.NEXT_PUBLIC_ALCHEMY_RINKEBY_URL)
-    const soundLibrary = new ethers.Contract(contractAddress, contractAbi, provider)
-    const soundCount = await soundLibrary.soundCount()
-    const data = []
-    for (var i = 0; i < soundCount; i++) {
-        const sound = await soundLibrary.sound(i)
-        data.push(sound)
-    }
-    console.log(data)
-    let theseSounds = await Promise.all(data.map(async i => {
-        let price = ethers.utils.formatUnits(i.price.toString(), 'ether')
-        let metadata = await axios.get(i.uri)
+    const { data } = await client.query({
+        query: gql`
+            query {
+                sounds {
+                  id
+                  tokenID
+                  tokenURI
+                  price
+                  owner {
+                    id
+                  }
+                  licenseCount
+                }
+              }     
+        `
+    })
+
+    let theseSounds = await Promise.all(data.sounds.map(async i => {
+        let price = ethers.utils.formatUnits(i.price, 'ether')
+        let metadata = await axios.get(i.tokenURI)
 
         let sound = {
             name: metadata.data.name,
-            tokenId: i.id.toString(),
+            tokenId: i.tokenID.toString(),
             price,
-            creator: i.creator,
             tokenURI: metadata.data.audio,
-            licenseCount: i.licensees.length
+            creator: i.owner.id.toString(),
+            licenseCount: i.licenseCount.toString()
         }
-
-        console.log(sound)
-
         return sound
-
-
     }))
     theseSounds = theseSounds.sort((a,b) => b.licenseCount - a.licenseCount)
 

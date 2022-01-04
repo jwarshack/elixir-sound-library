@@ -7,12 +7,12 @@ import {
   SoundCreated,
   SoundLicensed,
   Transfer
-} from "../generated/Elixir/Elixir"
+} from "../../generated/Elixir/Elixir"
 
 import {
   Sound,
   User
-} from "../generated/schema"
+} from "../../generated/schema"
 
 export function handleSoundCreated(event: SoundCreated): void {
   let sound = Sound.load(event.params.tokenId.toString())
