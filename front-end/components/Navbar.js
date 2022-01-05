@@ -1,4 +1,4 @@
-import { Flex, Box, Link, VStack, useToast, Button, Text} from "@chakra-ui/react"
+import { Flex, Box, Link, VStack, useToast, Button} from "@chakra-ui/react"
 import NextLink from 'next/link'
 import Image from "next/image"
 import { useState } from "react"
@@ -38,7 +38,7 @@ export default function Navbar() {
             setIsLoading(true)
             try {
                 const chainId = await ethereum.request({ method: 'eth_chainId' });
-                if (chainId !== '0x4') {
+                if (chainId !== '0x66eeb') {
                     toast({
                         position: "top",
                         title: "Wrong Network",
@@ -61,8 +61,9 @@ export default function Navbar() {
                     window.location.reload()
                   });
                   
-                  ethereum.on('chainChanged', () => {
+                  ethereum.on('chainChanged', (chainId) => {
                     window.location.reload();
+    
                   });
             } catch(error) {
                 console.log(error)
@@ -72,15 +73,6 @@ export default function Navbar() {
         }
     }
 
-    async function blahh() {
-        const permissions = await window.ethereum.request({
-            method: 'wallet_requestPermissions',
-            params: [{
-              eth_accounts: {},
-            }]
-          });
-
-    }
     return (
     <>
         <VStack as="nav" p={8} bg="black">

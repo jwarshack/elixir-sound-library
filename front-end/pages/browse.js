@@ -24,7 +24,7 @@ export async function getStaticProps() {
     const { data } = await client.query({
         query: gql`
             query {
-                sounds {
+                sounds(where: {id: "1"}) {
                   id
                   tokenID
                   tokenURI
@@ -40,13 +40,13 @@ export async function getStaticProps() {
 
     let theseSounds = await Promise.all(data.sounds.map(async i => {
         let price = ethers.utils.formatUnits(i.price, 'ether')
-        let metadata = await axios.get(i.tokenURI)
+        let metadata = await axios.get(`https://ipfs.infura.io/${i.tokenURI}`)
 
         let sound = {
             name: metadata.data.name,
             tokenId: i.tokenID.toString(),
             price,
-            tokenURI: metadata.data.audio,
+            tokenURI: `https://ipfs.infura.io/${metadata.data.audio}`,
             creator: i.owner.id.toString(),
             licenseCount: i.licenseCount.toString()
         }

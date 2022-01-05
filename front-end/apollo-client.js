@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client"
 
 const client = new ApolloClient({
-    uri: "https://api.studio.thegraph.com/query/18035/elixir-test/v0.0.7",
+    uri: " https://api.thegraph.com/subgraphs/name/jwarshack/arbitrum-rinkeby-elixir",
     cache: new InMemoryCache(),
 })
 

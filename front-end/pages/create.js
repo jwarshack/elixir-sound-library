@@ -70,7 +70,7 @@ export default function Create() {
                     progress: (prog) => console.log(`received: ${prog}`)
                 }
             )
-            url = `https://ipfs.infura.io/ipfs/${added.path}`
+            url = `ipfs/${added.path}`
             console.log(url)
 
         } catch(error) {
@@ -106,7 +106,7 @@ export default function Create() {
                     progress: (prog) => console.log(`received: ${prog}`)
                 }
             )
-            const url = `https://ipfs.infura.io/ipfs/${added.path}`
+            const url = `ipfs/${added.path}`
             return url
 
         } catch (error) {

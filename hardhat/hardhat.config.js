@@ -29,10 +29,25 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
     rinkeby: {
       url: process.env.ALCHEMY_RINKEBY_URL,
       accounts: [process.env.PRIVATE_KEY]
+    },
+    rinkebyArbitrum: {
+      url: "https://rinkeby.arbitrum.io/rpc",
+      accounts: [process.env.PRIVATE_KEY],
+      companionNetworks: {
+        l1: "rinkeby",
+      },
     }
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY
+    apiKey: process.env.ARBISCAN_API_KEY
   },
-  solidity: "0.8.4",
+  solidity: {
+    version: "0.8.4",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 1000,
+      },
+    },
+  },
 };

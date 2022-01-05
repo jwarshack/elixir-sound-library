@@ -1,9 +1,5 @@
-
-import {useState} from 'react'
 import { Box, Button, VStack } from '@chakra-ui/react'
 import NextLink from 'next/link'
-import { useDisclosure } from '@chakra-ui/hooks'
-import { Slide } from '@chakra-ui/transition'
 
 export default function MobileNav({ toggleMobileNav }) {
 
