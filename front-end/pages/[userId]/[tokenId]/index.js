@@ -132,6 +132,12 @@ export async function getStaticPaths() {
         `
     })
 
+    if (!data) {
+        return {
+            notFound: true
+        }
+    }
+
     let paths = data.sounds.map((sound) => {
 
         return {
@@ -142,9 +148,10 @@ export async function getStaticPaths() {
         }
     })
 
+
     return {
         paths,
-        fallback: true
+        fallback: false
     }
 }
 
