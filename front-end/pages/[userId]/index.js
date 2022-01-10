@@ -37,7 +37,6 @@ export async function getStaticPaths() {
         `
     })
 
-    console.log(data)
 
     let paths = data.users.map((user) => {
         return {
@@ -46,8 +45,6 @@ export async function getStaticPaths() {
             }
         }
     })
-
-    console.log(paths)
 
     return {
         paths,
