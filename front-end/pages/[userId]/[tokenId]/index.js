@@ -164,7 +164,7 @@ export async function getStaticProps(context) {
     })
     let sound = data.sounds[0]
     let price = ethers.utils.formatUnits(sound.price, 'ether')
-    let metadata = await axios.get(sound.tokenURI)
+    let metadata = await axios.get(`https://ipfs.infura.io/${sound.tokenURI}`)
 
     let thisSound = {
         
@@ -172,7 +172,7 @@ export async function getStaticProps(context) {
         tokenId: sound.tokenID,
         name: metadata.data.name,
         creator: userId,
-        tokenURI: metadata.data.audio,
+        tokenURI: `https://ipfs.infura.io/${metadata.data.audio}`,
         licenseCount: sound.licenseCount.toString(),
         type: metadata.data.type
     }

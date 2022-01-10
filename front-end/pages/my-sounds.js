@@ -5,7 +5,9 @@ import { Box, Flex, Text } from '@chakra-ui/layout'
 import { Spinner } from '@chakra-ui/react'
 import { useWeb3 } from '../context/useWeb3'
 import { ethers } from 'ethers'
-import { contractAddress, contractAbi } from '../config'
+import { gql } from '@apollo/client'
+import client from '../apollo-client'
+
 import axios from 'axios'
 
 
@@ -18,38 +20,45 @@ export default function MySounds() {
 
     useEffect(() => {
         loadSounds()
-    }, [])
+    }, [web3Provider])
 
 
 
     async function loadSounds() {
         if (web3Provider) {
             const signer = web3Provider.getSigner()
-            const contract = new ethers.Contract(contractAddress, contractAbi, signer);
             const address = await signer.getAddress()
-            console.log(address)
-            const mySounds = await contract.creatorSounds(address)
-            console.log(mySounds)
 
-            const data = []
-
-            for(var i = 0; i < mySounds.length; i++) {
-                const token = await contract.sound(i)
-                data.push(token)
-            }
-            let theseSounds = await Promise.all(data.map(async i => {
-                let price = ethers.utils.formatUnits(i.price.toString(), 'ether')
-                let metadata = await axios.get(i.uri)
+            const { data } = await client.query({
+                query: gql`
+                    query {
+                        users(where: {id: "${address.toLowerCase()}"}) {
+                          id
+                          sounds {
+                            id
+                            tokenID
+                            tokenURI
+                            price
+                            licenseCount
+                          }
+                        }
+                      }     
+                `
+            })
+        
+            let theseSounds = await Promise.all(data.users[0].sounds.map(async i => {
+                let price = ethers.utils.formatUnits(i.price, 'ether')
+                let metadata = await axios.get(`https://ipfs.infura.io/${i.tokenURI}`)
+        
                 let sound = {
-                    price,
                     name: metadata.data.name,
-                    creator: i.creator,
-                    tokenURI: metadata.data.audio,
+                    tokenId: i.tokenID.toString(),
+                    price,
+                    tokenURI: `https://ipfs.infura.io/${metadata.data.audio}`,
+                    creator: address,
                     licenseCount: i.licenseCount.toString()
                 }
-
                 return sound
-
             }))
             setSounds(theseSounds)
         }

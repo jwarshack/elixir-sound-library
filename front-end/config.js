@@ -1,4 +1,4 @@
-export const contractAddress = "0xF2446ed8114D829efD0cd0CF917735E2a73c90eA"
+export const contractAddress = "0x851861A6B9684066927c187fEfC98E8F76ad4859"
 export const contractAbi = [
   {
     "inputs": [],
@@ -71,9 +71,9 @@ export const contractAbi = [
         "type": "uint256"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
-        "name": "owner",
+        "name": "tokenOwner",
         "type": "address"
       }
     ],
@@ -104,7 +104,7 @@ export const contractAbi = [
       {
         "indexed": true,
         "internalType": "address",
-        "name": "owner",
+        "name": "tokenOwner",
         "type": "address"
       }
     ],
@@ -129,7 +129,7 @@ export const contractAbi = [
       {
         "indexed": false,
         "internalType": "address",
-        "name": "owner",
+        "name": "tokenOwner",
         "type": "address"
       },
       {
@@ -237,6 +237,30 @@ export const contractAbi = [
       }
     ],
     "name": "isApprovedForAll",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "isLicensed",
     "outputs": [
       {
         "internalType": "bool",

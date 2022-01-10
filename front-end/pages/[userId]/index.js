@@ -75,7 +75,7 @@ export async function getStaticProps(context) {
 
     let theseSounds = await Promise.all(data.users[0].sounds.map(async i => {
         let price = ethers.utils.formatUnits(i.price, 'ether')
-        let metadata = await axios.get(i.tokenURI)
+        let metadata = await axios.get(`https://ipfs.infura.io/${i.tokenURI}`)
 
         let sound = {
             name: metadata.data.name,

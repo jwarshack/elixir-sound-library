@@ -16,7 +16,7 @@ export default function Licenses() {
 
     useEffect(() => {
         loadSounds()
-    }, [])
+    }, [web3Provider])
 
     async function loadSounds() {
         if (web3Provider) {
@@ -33,12 +33,12 @@ export default function Licenses() {
             }
             let theseSounds = await Promise.all(data.map(async i => {
                 let price = ethers.utils.formatUnits(i.price.toString(), 'ether')
-                let metadata = await axios.get(i.uri)
+                let metadata = await axios.get(`https://ipfs.infura.io/${i.uri}`)
                 let sound = {
                     price,
                     name: metadata.data.name,
-                    creator: i.creator,
-                    tokenURI: metadata.data.audio,
+                    creator: i.tokenOwner,
+                    tokenURI: `https://ipfs.infura.io/${metadata.data.audio}`,
                     licenseCount: i.licensees.length,
                     type: metadata.data.type
                 }

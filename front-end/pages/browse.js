@@ -24,7 +24,7 @@ export async function getStaticProps() {
     const { data } = await client.query({
         query: gql`
             query {
-                sounds(where: {id: "1"}) {
+                sounds {
                   id
                   tokenID
                   tokenURI
