@@ -7,7 +7,6 @@ import { ethers } from 'ethers'
 import { contractAddress, contractAbi } from '../config'
 import axios from 'axios'
 
-
 export default function Licenses() {
     const [sounds, setSounds] = useState([])
     const [isLoading, setIsLoading] = useState(true)
