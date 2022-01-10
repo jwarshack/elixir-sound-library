@@ -121,22 +121,23 @@ export async function getStaticPaths() {
     const { data } = await client.query({
         query: gql`
             query {
-                users {
+                sounds {
                   id
-                  sounds {
+                  tokenID
+                      owner {
                     id
-                    tokenID
+                  }
                 }
-              }   
+              }
         `
     })
 
-    let paths = data.users.map((user) => {
+    let paths = data.sounds.map((sound) => {
 
         return {
             params: {
-                userId: user.id,
-                tokenId: user.tokenID
+                userId: sound.owner.id,
+                tokenId: sound.tokenID
             }
         }
     })
