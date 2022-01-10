@@ -53,6 +53,14 @@ export default function Create() {
 
         const fileHash = await uploadAudioFile(file)
 
+        console.log(fileHash)
+
+        if (fileHash.length != 51 || !fileHash.startsWith('ipfs/')) {
+            setErrorMsg("Something went wrong.")
+            setIsLoading(false)
+            return
+        }
+
         let metadata = {
             "name": name,
             "audio": fileHash,
@@ -78,6 +86,12 @@ export default function Create() {
             return
         }
 
+        if (url.length != 51 || !url.startsWith('ipfs/')) {
+            setErrorMsg("Something went wrong.")
+            setIsLoading(false)
+            return
+        }
+
         mintSound(url, price)
 
     }
@@ -91,6 +105,7 @@ export default function Create() {
 
             await tx.wait()
             setIsLoading(false)
+            console.log('yahh')
             
             router.push('/')
         }
@@ -98,7 +113,6 @@ export default function Create() {
     }
 
     async function uploadAudioFile(file) {
-        console.log(file)
         try {
             const added = await client.add(
                 file,
