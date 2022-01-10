@@ -23,7 +23,7 @@ export default function Index(props) {
     const toast = useToast()
 
 
-    const { web3Provider, setWeb3Provider } = useWeb3()
+    const { web3Provider } = useWeb3()
 
 
 
