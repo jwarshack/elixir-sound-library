@@ -15,7 +15,7 @@ export default function index(props) {
     return (
         <>
             <Head>
-                <title>Profile - {props.userId} Elixir Sound Library</title>
+                <title>Profile - {props.userId} | Elixir Sound Library</title>
             </Head>
             <VStack pt={10}>
                 <Davatar size={75} address={props.userId}/>

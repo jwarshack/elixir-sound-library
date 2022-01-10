@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react'
 import { ethers } from 'ethers'
+import Head from 'next/head'
 import { Box, Flex, Text, Spinner, Button, useToast} from '@chakra-ui/react'
 import dynamic from 'next/dynamic'
 import { shortAddress } from '../../../utils/helpers'
@@ -78,34 +79,40 @@ export default function Index(props) {
 
     if (isLoading) return <Flex justify="center" p={20}><Spinner size="xl"/></Flex>
     return (
-        <Flex direction="column" p={10}>
-            <Flex justify="center" w="100%" maxWidth="1000px" mx="auto">
-                <Box w="50%" rounded="xl" overflow="hidden" border="1px" borderColor="gray.200" mr={6} pb={10}>
-                    <AudioPlayer src={props.token.tokenURI}/>
-                </Box>
+        <>
+            <Head>
+                <title> {props.token.name} - {props.token.creator} | Elixir Sound Library</title>
+            </Head>
+            <Flex direction="column" p={10}>
+                <Flex justify="center" w="100%" maxWidth="1000px" mx="auto">
+                    <Box w="50%" rounded="xl" overflow="hidden" border="1px" borderColor="gray.200" mr={6} pb={10}>
+                        <AudioPlayer src={props.token.tokenURI}/>
+                    </Box>
 
-                <Flex direction="column" w="50%">
-                    <Text fontWeight="semibold" fontSize="3xl">{props.token.name}</Text>
-                    <Text fontSize="xl" fontWeight="semibold" py={3}>Total Samples: <Text as="span" mr={8} fontSize="xl" fontWeight="normal" textColor="gray.500">{props.token.licenseCount}</Text></Text>
-                    <Text>File type: {props.token.type}</Text>
+                    <Flex direction="column" w="50%">
+                        <Text fontWeight="semibold" fontSize="3xl">{props.token.name}</Text>
+                        <Text fontSize="xl" fontWeight="semibold" py={3}>Total Samples: <Text as="span" mr={8} fontSize="xl" fontWeight="normal" textColor="gray.500">{props.token.licenseCount}</Text></Text>
+                        <Text>File type: {props.token.type}</Text>
+                    </Flex>
+                    
                 </Flex>
-                
+                <Flex w="100%" maxWidth="1000px" pt={10} mx="auto">
+                    <Flex p={5} direction="column" align="start" w="50%" rounded="xl" overflow="hidden" border="1px" borderColor="gray.200" mr={6} >
+                        <Text fontSize="2xl" fontWeight="semibold">Created by: <Text as="span" mr={8} fontSize="xl" fontWeight="normal" textColor="gray.500">{shortAddress(props.token.creator)}</Text></Text>
+                        <NextLink href={`/${encodeURIComponent(props.token.creator)}`}><Button mt={5}>See more by this artist</Button></NextLink>
+                    </Flex>
+                    <Flex direction="column" w="50%" align="start" p={5} rounded="xl" overflow="hidden" border="1px" borderColor="gray.300" bg="gray.200" >
+                            <Text>Price:</Text>
+                            <Text>{props.token.price} ETH</Text>
+                            <Button bg="black" color="white" _hover={{bg: "gray.600"}} mt={5} px={4} onClick={() => licenseSound(props.token.tokenId)}>Sample</Button>
+
+                    </Flex>
+
+                    
+                </Flex>
             </Flex>
-            <Flex w="100%" maxWidth="1000px" pt={10} mx="auto">
-                <Flex p={5} direction="column" align="start" w="50%" rounded="xl" overflow="hidden" border="1px" borderColor="gray.200" mr={6} >
-                    <Text fontSize="2xl" fontWeight="semibold">Created by: <Text as="span" mr={8} fontSize="xl" fontWeight="normal" textColor="gray.500">{shortAddress(props.token.creator)}</Text></Text>
-                    <NextLink href={`/${encodeURIComponent(props.token.creator)}`}><Button mt={5}>See more by this artist</Button></NextLink>
-                </Flex>
-                <Flex direction="column" w="50%" align="start" p={5} rounded="xl" overflow="hidden" border="1px" borderColor="gray.300" bg="gray.200" >
-                        <Text>Price:</Text>
-                        <Text>{props.token.price} ETH</Text>
-                        <Button bg="black" color="white" _hover={{bg: "gray.600"}} mt={5} px={4} onClick={() => licenseSound(props.token.tokenId)}>Sample</Button>
+        </>
 
-                </Flex>
-
-                
-            </Flex>
-        </Flex>
     )
 }
 
