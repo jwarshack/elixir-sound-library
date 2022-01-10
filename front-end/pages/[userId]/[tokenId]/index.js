@@ -126,7 +126,8 @@ export async function getStaticPaths() {
     })
 
 
-    let paths = data.sounds.map((sound) => {
+
+    let paths = data.sounds[0].map((sound) => {
 
         return {
             params: {
