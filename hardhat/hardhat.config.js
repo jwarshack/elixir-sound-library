@@ -36,7 +36,10 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
       companionNetworks: {
         l1: "rinkeby",
       },
-    }
+    },
+    arbitrum: {
+      url: 'https://rinkeby.arbitrum.io/rpc',
+    },
   },
   etherscan: {
     apiKey: process.env.ARBISCAN_API_KEY
