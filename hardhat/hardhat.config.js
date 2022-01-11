@@ -38,7 +38,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
       },
     },
     arbitrum: {
-      url: 'https://rinkeby.arbitrum.io/rpc',
+      url: process.env.INFURA_ARBITRUM_URL,
       accounts: [process.env.PRIVATE_KEY],
     },
   },
