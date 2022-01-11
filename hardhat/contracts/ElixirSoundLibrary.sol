@@ -52,6 +52,7 @@ contract ElixirSoundLibrary is ERC721URIStorage {
     
     /// @notice Mints sound
     /// @param _data SoundData struct containing price and uri
+    /// * uri is of the form "ipfs/<cid>"
     function mintSound(SoundData memory _data) external {
         uint256 currentId = tokenCounter.current();
         tokenIdToPrice[currentId] = _data.price;

@@ -49,7 +49,7 @@ export async function getStaticProps() {
             name: metadata.data.name,
             tokenId: i.tokenID.toString(),
             price,
-            tokenURI: metadata.data.audio,
+            tokenURI: `https://ipfs.infura.io/${metadata.data.audio}`,
             creator: i.owner.id.toString(),
             licenseCount: i.licenseCount.toString()
         }
