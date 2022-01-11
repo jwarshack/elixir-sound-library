@@ -39,6 +39,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
     },
     arbitrum: {
       url: 'https://rinkeby.arbitrum.io/rpc',
+      accounts: [process.env.PRIVATE_KEY],
     },
   },
   etherscan: {

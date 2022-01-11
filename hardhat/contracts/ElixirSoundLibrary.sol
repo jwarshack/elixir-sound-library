@@ -116,5 +116,4 @@ contract ElixirSoundLibrary is ERC721URIStorage {
     function licenses() external view returns (uint256[] memory) {
         return licenseeToTokenIds[msg.sender];
     }
-
 }
