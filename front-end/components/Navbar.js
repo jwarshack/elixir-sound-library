@@ -38,11 +38,11 @@ export default function Navbar() {
             setIsLoading(true)
             try {
                 const chainId = await ethereum.request({ method: 'eth_chainId' });
-                if (chainId !== '0x66eeb') {
+                if (chainId !== '0xa4b1') {
                     toast({
                         position: "top",
                         title: "Wrong Network",
-                        description: "Please connect to mainnet.",
+                        description: "Please connect to Arbitrum.",
                         status: "error",
                         duration: 9000,
                         isClosable: true,

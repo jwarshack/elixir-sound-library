@@ -105,7 +105,6 @@ export default function Create() {
 
             await tx.wait()
             setIsLoading(false)
-            console.log('yahh')
             
             router.push('/')
         }
