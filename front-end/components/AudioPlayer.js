@@ -19,6 +19,7 @@ export default function AudioPlayer({ src }) {
             progressColor: '#EC4899',
             barWidth: 1,
             cursorWidth: 0,
+            normalize: true,
             isPlaying
         })
         waveSurfer.load(src)
