@@ -1,10 +1,10 @@
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
 import Head from 'next/head'
 import { Box, Flex, Text, Spinner, Button, useToast} from '@chakra-ui/react'
 import dynamic from 'next/dynamic'
-import { shortAddress } from '../../../utils/helpers'
+import { getAddressOrENS } from '../../../utils/helpers'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useWeb3 } from '../../../context/useWeb3'
@@ -32,6 +32,18 @@ export default function Index(props) {
         () => import('../../../components/AudioPlayer'),
         {ssr: false}
     )
+
+    const [user, setUser] = useState('')
+
+    useEffect(() => {
+        getEns()
+    }, [])
+
+    async function getEns() {
+        const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_ALCHEMY_URL)
+        let ens = await getAddressOrENS(props.token.creator, provider)
+        setUser(ens)
+    }
 
     async function licenseSound(id) {
         setIsLoading(true)
@@ -98,7 +110,7 @@ export default function Index(props) {
                 </Flex>
                 <Flex w="100%" maxWidth="1000px" pt={10} mx="auto">
                     <Flex p={5} direction="column" align="start" w="50%" rounded="xl" overflow="hidden" border="1px" borderColor="gray.200" mr={6} >
-                        <Text fontSize="2xl" fontWeight="semibold">Created by: <Text as="span" mr={8} fontSize="xl" fontWeight="normal" textColor="gray.500">{shortAddress(props.token.creator)}</Text></Text>
+                        <Text fontSize="2xl" fontWeight="semibold">Created by: <Text as="span" mr={8} fontSize="xl" fontWeight="normal" textColor="gray.500">{user}</Text></Text>
                         <NextLink href={`/${encodeURIComponent(props.token.creator)}`}><Button mt={5}>See more by this artist</Button></NextLink>
                     </Flex>
                     <Flex direction="column" w="50%" align="start" p={5} rounded="xl" overflow="hidden" border="1px" borderColor="gray.300" bg="gray.200" >

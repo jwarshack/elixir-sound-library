@@ -1,16 +1,28 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { VStack, Heading } from '@chakra-ui/react'
 import SoundGrid from '../../components/SoundGrid'
 import { ethers } from 'ethers'
-import { shortAddress } from '../../utils/helpers'
+import { getAddressOrENS } from '../../utils/helpers'
 import axios from 'axios'
 import Davatar from '@davatar/react'
 import { gql } from '@apollo/client'
 import client from '../../apollo-client'
 
 
-export default function index(props) {
+export default function Index(props) {
+
+    const [user, setUser] = useState('')
+
+    useEffect(() => {
+        getEns()
+    }, [])
+
+    async function getEns() {
+        const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_ALCHEMY_URL)
+        let ens = await getAddressOrENS(props.userId, provider)
+        setUser(ens)
+    }
 
     return (
         <>
@@ -18,8 +30,8 @@ export default function index(props) {
                 <title>Profile - {props.userId} | Elixir Sound Library</title>
             </Head>
             <VStack pt={10}>
-                <Davatar size={75} address={props.userId}/>
-                <Heading>{shortAddress(props.userId)}</Heading>
+                <Davatar size={75} address={ethers.utils.getAddress(props.userId)}/>
+                <Heading>{user}</Heading>
             </VStack>
             <SoundGrid sounds={props.tokens}/>
         </>
@@ -41,7 +53,7 @@ export async function getStaticPaths() {
     let paths = data.users.map((user) => {
         return {
             params: {
-                userId: user.id.toString()
+                userId: user.id
             }
         }
     })

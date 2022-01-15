@@ -3,3 +3,11 @@ export function shortAddress(addr) {
     const last = addr.slice(-4)
     return `${first}...${last}`
 }
+
+export async function getAddressOrENS(addr, provider) {
+    if (!provider) return addr
+
+    const name = await provider.lookupAddress(addr)
+    if (!name) return shortAddress(addr)
+    return name
+}
