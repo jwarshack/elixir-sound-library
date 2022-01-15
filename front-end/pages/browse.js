@@ -4,7 +4,6 @@ import SoundGrid from '../components/SoundGrid'
 import { ethers } from 'ethers'
 import { gql } from '@apollo/client'
 import client from '../apollo-client'
-
 import axios from 'axios'
 
 export default function Browse(props) {
