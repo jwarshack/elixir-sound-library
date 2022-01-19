@@ -1,7 +1,6 @@
 import Image from "next/image"
 import { Flex, Link, HStack, Text, List, ListItem, Divider, VStack } from "@chakra-ui/react"
 import { FaDiscord, FaTwitter, FaYoutube } from 'react-icons/fa'
-import footerLogo from '../public/img/footerlogo.png'
 
 export default function Footer() {
 
