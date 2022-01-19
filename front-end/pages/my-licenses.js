@@ -61,7 +61,7 @@ export default function Licenses() {
             </Head>
 
             <Box p={6}>
-                <SoundTable sounds={sounds}/>
+                <SoundTable sounds={sounds} page="my-licenses"/>
             </Box>
         </>
     )

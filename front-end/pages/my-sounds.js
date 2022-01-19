@@ -45,6 +45,11 @@ export default function MySounds() {
                       }     
                 `
             })
+
+            if (!data.users[0]) {
+                setIsLoading(false)
+                return
+            }
         
             let theseSounds = await Promise.all(data.users[0].sounds.map(async i => {
                 let price = ethers.utils.formatUnits(i.price, 'ether')
@@ -76,7 +81,7 @@ export default function MySounds() {
                 <title>My Sounds | Elixir Sound Library</title>
             </Head>
             <Box p={6}>
-                <SoundTable sounds={sounds}/>
+                <SoundTable sounds={sounds} page="my-sounds"/>
             </Box>
         </>
     )

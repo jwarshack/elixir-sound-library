@@ -10,6 +10,7 @@ export default function SoundGrid({ sounds }) {
             p={10}
             templateColumns={{sm:"repeat(1, 1fr)", md: "repeat(2, 1fr)", xl: "repeat(4, 1fr)"}}
             gap={10}
+            as="main"
         >
             {
                 sounds.map((sound, key) => (

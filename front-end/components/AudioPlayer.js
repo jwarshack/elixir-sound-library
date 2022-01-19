@@ -24,6 +24,10 @@ export default function AudioPlayer({ src }) {
         })
         waveSurfer.load(src)
         setWaveSurfer(waveSurfer)
+
+        waveSurfer.on('finish', () => {
+            setIsPlaying(false)
+        })
     }, [])
 
 
