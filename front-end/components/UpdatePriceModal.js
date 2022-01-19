@@ -8,14 +8,11 @@ import {
     ModalBody,
     ModalCloseButton,
     Button,
-    Text,
     Input,
     InputGroup,
     InputRightAddon,
     Alert,
     AlertDescription,
-    Spinner,
-    Flex
   } from '@chakra-ui/react'
 import { useWeb3 } from '../context/useWeb3'
 import { ethers } from 'ethers'
@@ -77,7 +74,7 @@ export default function UpdatePriceModal({ isOpen, onClose, sound }) {
                 }
                 <InputGroup>
                     <Input placeholder={sound.price} type="number" onChange={(e) => setNewPrice(e.target.value)}/>
-                    <InputRightAddon children='ETH'/>
+                    <InputRightAddon>ETH</InputRightAddon>
                 </InputGroup>
             </ModalBody>
 

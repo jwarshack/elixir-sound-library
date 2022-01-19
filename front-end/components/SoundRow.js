@@ -20,7 +20,7 @@ export default function SoundRow({ sound, page }) {
                     {
                         page === 'my-licenses' 
                         ? <Button color="black" bg="gray.100" as="a" p={2} fontSize={25} href={sound.tokenURI} target="_blank" rel="noreferrer noopener"><BsDownload/></Button>
-                        : <Button color="black" bg="gray.100" p={2} fontSize={25} fontSize={20} onClick={onOpen}><BsPencilSquare/></Button>
+                        : <Button color="black" bg="gray.100" p={2} fontSize={20} onClick={onOpen}><BsPencilSquare/></Button>
                         
                     }
                 </Td>
