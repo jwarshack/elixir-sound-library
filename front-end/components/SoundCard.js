@@ -1,6 +1,7 @@
 import NextLink from 'next/link'
 import { useState, useEffect } from 'react'
 import { Box, Flex, Button, Link, Text} from "@chakra-ui/react"
+import { FaEthereum } from 'react-icons/fa'
 import { getAddressOrENS } from "../utils/helpers"
 import dynamic from 'next/dynamic'
 import Davatar from '@davatar/react'
@@ -46,7 +47,8 @@ export default function SoundCard({ sound }) {
             <Flex justify="space-between" p={4} bg="black">
                 <Box color="white">
                     <Text fontSize="16px" fontWeight="semibold">Price:</Text>
-                    <Text fontSize="xs">{sound.price} ETH</Text>
+                    <Flex fontSize="sm" align="center"><FaEthereum/>{sound.price}</Flex>
+
                 </Box>
                 <NextLink href={`/${encodeURIComponent(sound.creator)}/${encodeURIComponent(sound.tokenId)}`}><Button textColor="black" as="a">Sample</Button></NextLink>
 

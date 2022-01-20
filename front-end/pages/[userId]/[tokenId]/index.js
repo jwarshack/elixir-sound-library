@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
 import Head from 'next/head'
 import { Box, Flex, Text, Spinner, Button, useToast, Grid} from '@chakra-ui/react'
+import { FaEthereum } from 'react-icons/fa'
 import { useMediaQuery } from '@chakra-ui/react'
 import dynamic from 'next/dynamic'
 import { getAddressOrENS } from '../../../utils/helpers'
@@ -118,7 +119,10 @@ export default function Index(props) {
                 </Flex>
                 <Flex direction="column" w="100%" align="start" p={5} rounded="xl" overflow="hidden" border="1px" borderColor="gray.300" bg="gray.200" >
                         <Text>Price:</Text>
-                        <Text>{props.token.price} ETH</Text>
+                        <Flex>
+                                <Flex mr="1" fontWeight="bold" align="center"><FaEthereum/>{props.token.price}</Flex>
+                                <Text>(${props.token.priceInUSD})</Text>
+                        </Flex>                        
                         <Button bg="black" color="white" _hover={{bg: "gray.600"}} mt={5} px={4} onClick={() => licenseSound(props.token.tokenId)}>Sample</Button>
 
                 </Flex>
@@ -184,10 +188,15 @@ export async function getStaticProps(context) {
     let sound = data.sounds[0]
     let price = ethers.utils.formatUnits(sound.price, 'ether')
     let metadata = await axios.get(`https://ipfs.infura.io/${sound.tokenURI}`)
+    let priceData = await axios.get('https://api.coinbase.com/v2/prices/ETH-USD/spot')
+    let ethPrice = priceData.data.data.amount
+    let priceInUSD = Number(price) * Number(ethPrice)
+    priceInUSD = priceInUSD.toFixed(2)
 
     let thisSound = {
         
         price,
+        priceInUSD,
         tokenId: sound.tokenID,
         name: metadata.data.name,
         creator: userId,
