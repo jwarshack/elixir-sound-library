@@ -21,6 +21,7 @@ export default function AudioPlayer({ src }) {
             cursorWidth: 0,
             normalize: true,
             hideScrollbar: true,
+            responsive: true,
             isPlaying
         })
         waveSurfer.load(src)
