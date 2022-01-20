@@ -20,8 +20,8 @@ export default function Index(props) {
 
     async function getEns() {
         const provider = ethers.getDefaultProvider("homestead", {
-            alchemy: process.env.NEXT_PUBLIC_ALCHEMY_URL,
-        })
+            alchemy: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
+            infura: process.env.NEXT_PUBLIC_INFURA_API_KEY        })
         let ens = await getAddressOrENS(props.userId, provider)
         setUser(ens)
     }
