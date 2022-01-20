@@ -19,7 +19,9 @@ export default function Index(props) {
     }, [])
 
     async function getEns() {
-        const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_ALCHEMY_URL)
+        const provider = ethers.getDefaultProvider("homestead", {
+            alchemy: process.env.NEXT_PUBLIC_ALCHEMY_URL,
+        })
         let ens = await getAddressOrENS(props.userId, provider)
         setUser(ens)
     }
