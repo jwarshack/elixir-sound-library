@@ -20,6 +20,7 @@ export default function AudioPlayer({ src }) {
             barWidth: 1,
             cursorWidth: 0,
             normalize: true,
+            hideScrollbar: true,
             isPlaying
         })
         waveSurfer.load(src)
