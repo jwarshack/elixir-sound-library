@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { VStack, Heading } from '@chakra-ui/react'
 import SoundGrid from '../../components/SoundGrid'
@@ -12,20 +11,6 @@ import client from '../../apollo-client'
 
 export default function Index(props) {
 
-    const [user, setUser] = useState('')
-
-    useEffect(() => {
-        getEns()
-    }, [])
-
-    async function getEns() {
-        const provider = ethers.getDefaultProvider("homestead", {
-            alchemy: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
-            infura: process.env.NEXT_PUBLIC_INFURA_API_KEY        })
-        let ens = await getAddressOrENS(props.userId, provider)
-        setUser(ens)
-    }
-
     return (
         <>
             <Head>
@@ -33,7 +18,7 @@ export default function Index(props) {
             </Head>
             <VStack pt={10}>
                 <Davatar size={75} address={ethers.utils.getAddress(props.userId)}/>
-                <Heading>{user}</Heading>
+                <Heading>{props.tokens[0].ens}</Heading>
             </VStack>
             <SoundGrid sounds={props.tokens}/>
         </>
@@ -88,12 +73,20 @@ export async function getStaticProps(context) {
         let price = ethers.utils.formatUnits(i.price, 'ether')
         let metadata = await axios.get(`https://ipfs.infura.io/${i.tokenURI}`)
 
+
+        const provider = ethers.getDefaultProvider("homestead", {
+            alchemy: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
+            infura: process.env.NEXT_PUBLIC_INFURA_API_KEY
+        })
+        let ens = await getAddressOrENS(userId, provider)
+
         let sound = {
             name: metadata.data.name,
             tokenId: i.tokenID.toString(),
             price,
             tokenURI: `https://ipfs.infura.io/${metadata.data.audio}`,
             creator: userId,
+            ens,
             licenseCount: i.licenseCount.toString()
         }
         return sound
