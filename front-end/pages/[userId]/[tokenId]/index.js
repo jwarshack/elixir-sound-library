@@ -4,7 +4,6 @@ import { ethers } from 'ethers'
 import Head from 'next/head'
 import { Box, Flex, Text, Spinner, Button, useToast, Grid} from '@chakra-ui/react'
 import { FaEthereum } from 'react-icons/fa'
-import { useMediaQuery } from '@chakra-ui/react'
 import dynamic from 'next/dynamic'
 import { getAddressOrENS } from '../../../utils/helpers'
 import NextLink from 'next/link'
@@ -25,29 +24,12 @@ export default function Index(props) {
     const [isLoading, setIsLoading] = useState(false)
     const toast = useToast()
 
-    const [isMobile] = useMediaQuery("(max-width: 768px)") 
-
     const { web3Provider } = useWeb3()
 
     const AudioPlayer = dynamic(
         () => import('../../../components/AudioPlayer'),
         {ssr: false}
     )
-
-    const [user, setUser] = useState('')
-
-    useEffect(() => {
-        getEns()
-    }, [])
-
-    async function getEns() {
-        const provider = ethers.getDefaultProvider("homestead", {
-            alchemy: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
-            infura: process.env.NEXT_PUBLIC_INFURA_API_KEY
-        })
-        let ens = await getAddressOrENS(props.token.creator, provider)
-        setUser(ens)
-    }
 
     async function licenseSound(id) {
         setIsLoading(true)
@@ -114,7 +96,7 @@ export default function Index(props) {
                     <Text>File type: {props.token.type}</Text>
                 </Flex>
                 <Flex p={5} direction="column" align="start" w="100%" rounded="xl" overflow="hidden" border="1px" borderColor="gray.200" mr={6} >
-                    <Text fontSize="2xl" fontWeight="semibold">Created by: <Text as="span" mr={8} fontSize="xl" fontWeight="normal" textColor="gray.500">{user}</Text></Text>
+                    <Text fontSize="2xl" fontWeight="semibold">Created by: <Text as="span" mr={8} fontSize="xl" fontWeight="normal" textColor="gray.500">{props.token.ens}</Text></Text>
                     <NextLink href={`/${encodeURIComponent(props.token.creator)}`}><Button mt={5}>See more by this artist</Button></NextLink>
                 </Flex>
                 <Flex direction="column" w="100%" align="start" p={5} rounded="xl" overflow="hidden" border="1px" borderColor="gray.300" bg="gray.200" >
@@ -186,12 +168,21 @@ export async function getStaticProps(context) {
         `
     })
     let sound = data.sounds[0]
+
     let price = ethers.utils.formatUnits(sound.price, 'ether')
+
     let metadata = await axios.get(`https://ipfs.infura.io/${sound.tokenURI}`)
+
     let priceData = await axios.get('https://api.coinbase.com/v2/prices/ETH-USD/spot')
     let ethPrice = priceData.data.data.amount
     let priceInUSD = Number(price) * Number(ethPrice)
     priceInUSD = priceInUSD.toFixed(2)
+
+    const provider = ethers.getDefaultProvider("homestead", {
+        alchemy: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
+        infura: process.env.NEXT_PUBLIC_INFURA_API_KEY
+    })
+    let ens = await getAddressOrENS(userId, provider)
 
     let thisSound = {
         
@@ -200,6 +191,7 @@ export async function getStaticProps(context) {
         tokenId: sound.tokenID,
         name: metadata.data.name,
         creator: userId,
+        ens,
         tokenURI: `https://ipfs.infura.io/${metadata.data.audio}`,
         licenseCount: sound.licenseCount.toString(),
         type: metadata.data.type
