@@ -1,5 +1,5 @@
 import NextLink from 'next/link'
-import { Box, Flex, Button, Link, Text} from "@chakra-ui/react"
+import { Box, Flex, Button, Text} from "@chakra-ui/react"
 import { FaEthereum } from 'react-icons/fa'
 import dynamic from 'next/dynamic'
 import Davatar from '@davatar/react'
@@ -19,7 +19,7 @@ export default function SoundCard({ sound }) {
             <Flex justify="space-between" p={4} bg="gray.100">
                 <Box w="75%">
                     <Text fontSize="16px" whiteSpace="nowrap" textOverflow="ellipsis" overflow="hidden" fontWeight="semibold">{sound.name}</Text>
-                    <NextLink href={`/${encodeURIComponent(sound.creator)}`}><Flex align="center"><Davatar address={ethers.utils.getAddress(sound.creator)} size={15} /><Link _hover={{color: "pink.500"}} fontSize="16px" ml={2}>{sound.ens}</Link></Flex></NextLink>
+                    <NextLink href={`/${encodeURIComponent(sound.creator)}`}><Flex align="center"><Davatar address={ethers.utils.getAddress(sound.creator)} size={15} /><Text _hover={{color: "pink.500"}} cursor="pointer" fontSize="16px" ml={2}>{sound.ens}</Text></Flex></NextLink>
                 </Box>
                 <Box>
                 <Text fontSize="xs" fontWeight="semibold">Samples</Text>
