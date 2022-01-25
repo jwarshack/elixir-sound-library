@@ -173,8 +173,8 @@ export async function getStaticProps(context) {
 
     let metadata = await axios.get(`https://ipfs.infura.io/${sound.tokenURI}`)
 
-    let priceData = await axios.get('https://api.coinbase.com/v2/prices/ETH-USD/spot')
-    let ethPrice = priceData.data.data.amount
+    let priceData = await axios.get(`https://api.etherscan.io/api?module=stats&action=ethprice&apikey=${process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY}`)
+    let ethPrice = priceData.data.result.ethusd
     let priceInUSD = Number(price) * Number(ethPrice)
     priceInUSD = priceInUSD.toFixed(2)
 

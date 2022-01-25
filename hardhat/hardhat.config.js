@@ -22,36 +22,37 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  */
  module.exports = {
   defaultNetwork: "hardhat",
-  networks: {
-    hardhat: {
-      chainId: 1337
-    },
-    rinkeby: {
-      url: process.env.ALCHEMY_RINKEBY_URL,
-      accounts: [process.env.PRIVATE_KEY]
-    },
-    rinkebyArbitrum: {
-      url: "https://rinkeby.arbitrum.io/rpc",
-      accounts: [process.env.PRIVATE_KEY],
-      companionNetworks: {
-        l1: "rinkeby",
-      },
-    },
-    arbitrum: {
-      url: process.env.INFURA_ARBITRUM_URL,
-      accounts: [process.env.PRIVATE_KEY],
-    },
-  },
-  etherscan: {
-    apiKey: process.env.ARBISCAN_API_KEY
-  },
-  solidity: {
-    version: "0.8.4",
-    settings: {
-      optimizer: {
-        enabled: true,
-        runs: 1000,
-      },
-    },
-  },
-};
+ }
+//   networks: {
+//     hardhat: {
+//       chainId: 1337
+//     },
+//     rinkeby: {
+//       url: process.env.ALCHEMY_RINKEBY_URL,
+//       accounts: [process.env.PRIVATE_KEY]
+//     },
+//     rinkebyArbitrum: {
+//       url: "https://rinkeby.arbitrum.io/rpc",
+//       accounts: [process.env.PRIVATE_KEY],
+//       companionNetworks: {
+//         l1: "rinkeby",
+//       },
+//     },
+//     arbitrum: {
+//       url: process.env.INFURA_ARBITRUM_URL,
+//       accounts: [process.env.PRIVATE_KEY],
+//     },
+//   },
+//   etherscan: {
+//     apiKey: process.env.ARBISCAN_API_KEY
+//   },
+//   solidity: {
+//     version: "0.8.4",
+//     settings: {
+//       optimizer: {
+//         enabled: true,
+//         runs: 1000,
+//       },
+//     },
+//   },
+// };
