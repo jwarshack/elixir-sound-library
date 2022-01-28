@@ -165,7 +165,7 @@ export default function Create() {
                 </VStack>
 
                 <input type="file" accept="audio/*" onChange={handleFile}/>
-                <Button  py={6} width="100%" color="white" bg="pink.500" _hover={{bg: "pink.300"}} onClick={upload}>Upload</Button>
+                <Button  py={6} width="100%" color="white" bg="pink.500" _hover={{bg: "pink.300"}} disabled onClick={upload}>Upload</Button>
                 <Text fontSize="sm">Elixir Sound Library takes a 4% licensing fee</Text>
 
                 <audio ref={audioRef} controls style={{display: "none"}}></audio>
