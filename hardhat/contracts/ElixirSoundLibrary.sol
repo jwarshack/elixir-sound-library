@@ -2,13 +2,14 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 /**
  * @title Elixir Sound Library
  * @notice Modified ERC721 contract that allows for token licensing
  */
-contract ElixirSoundLibrary is ERC721URIStorage {
+contract ElixirSoundLibrary is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
 
     Counters.Counter public tokenCounter;
@@ -39,20 +40,14 @@ contract ElixirSoundLibrary is ERC721URIStorage {
     );
     
     mapping(uint256 => uint256) private tokenIdToPrice;
-    mapping(uint256 => address[]) private tokenIdToLicensees;
-    mapping(address => uint256[]) private licenseeToTokenIds;
     mapping(uint256 => mapping(address => bool)) public isLicensed;
-    
-    address private owner;
-    
-    constructor() ERC721("Elixir", "ELIX") {
-        owner = msg.sender;
-    }
+        
+    constructor() ERC721("Elixir", "ELIX") {}
     
     /**
      * @notice Mints sound 
      * @param _data SoundData containing price and tokenURI
-     * @dev tokenURI should be of the form `ipfs/<CID>`
+     * @dev tokenURI should be an IPFS CID`
      */
     function mintSound(SoundData memory _data) external {
         uint256 currentId = tokenCounter.current();
@@ -79,16 +74,14 @@ contract ElixirSoundLibrary is ERC721URIStorage {
         uint256 _price = tokenIdToPrice[_tokenId];
         require(msg.value == _price, "Please submit the correct amount of ether");
 
-        tokenIdToLicensees[_tokenId].push(msg.sender);
-        licenseeToTokenIds[msg.sender].push(_tokenId);
         isLicensed[_tokenId][msg.sender] = true;
 
         // Platform takes 4% fee
         uint256 _fee = _price / 25; 
-
-        // Transfer ether to token owner and platform owner
-        payable(_tokenOwner).transfer(_price - _fee);
-        payable(owner).transfer(_fee);
+        
+        // Transfer ether to token owner
+		(bool success, ) = _tokenOwner.call{value: _price - _fee}("");
+		require(success, "Falied to send ether");
 
         emit SoundLicensed(_tokenId, _price, _tokenOwner, msg.sender);
     }
@@ -106,14 +99,15 @@ contract ElixirSoundLibrary is ERC721URIStorage {
     /**
      * @notice Returns sound for a given token id
      */
-    function sound(uint256 _tokenId) external view returns (uint256 tokenId, uint256 price, string memory uri, address tokenOwner, address[] memory licensees) {
-        return (_tokenId, tokenIdToPrice[_tokenId], tokenURI(_tokenId), ownerOf(_tokenId), tokenIdToLicensees[_tokenId]);
+    function sound(uint256 _tokenId) external view returns (uint256 tokenId, uint256 price, string memory uri, address tokenOwner) {
+        return (_tokenId, tokenIdToPrice[_tokenId], tokenURI(_tokenId), ownerOf(_tokenId));
     }
 
     /**
-     * @notice Returns licenses of caller
+     * @notice Owner withdrawal
      */
-    function licenses() external view returns (uint256[] memory) {
-        return licenseeToTokenIds[msg.sender];
-    }
+  	function withdraw() external payable onlyOwner {
+		(bool success, ) = msg.sender.call{value: address(this).balance}("");
+		require(success, "Failed to send ether");
+	}
 }

@@ -22,7 +22,6 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  */
  module.exports = {
   defaultNetwork: "hardhat",
- }
 //   networks: {
 //     hardhat: {
 //       chainId: 1337
@@ -46,13 +45,13 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 //   etherscan: {
 //     apiKey: process.env.ARBISCAN_API_KEY
 //   },
-//   solidity: {
-//     version: "0.8.4",
-//     settings: {
-//       optimizer: {
-//         enabled: true,
-//         runs: 1000,
-//       },
-//     },
-//   },
-// };
+  solidity: {
+    version: "0.8.4",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 1000,
+      },
+    },
+  },
+};
