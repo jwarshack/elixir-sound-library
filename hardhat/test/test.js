@@ -73,7 +73,6 @@ describe("Elixir Sound Library", function () {
 
     const sound = await elixir.sound(0)
 
-    expect(sound.licensees.length).to.equal(2)
 
 
     let newDeployerBal = await provider.getBalance(deployer.address)
@@ -130,6 +129,29 @@ describe("Elixir Sound Library", function () {
     // UPDATING PRICE
     await expect(elixir.connect(licensee).updatePrice('1', hre.ethers.utils.parseEther('0.05') )).to.be.revertedWith("Only the owner can update the price")
 
+
+  })
+
+  it("shoudl withdraw", async function () {
+    const [deployer, creator, licensee, owner, licensee2] = await hre.ethers.getSigners()
+
+
+    let provider = ethers.provider;
+
+    let contractBal = await provider.getBalance( elixir.address)
+    console.log("contract amount", contractBal.toString())
+
+
+    let deployerBal = await provider.getBalance(deployer.address)
+    console.log("deplyer bal", deployerBal.toString())
+
+    await elixir.connect(deployer).withdraw()
+
+    deployerBal = await provider.getBalance(deployer.address)
+    console.log("deplyer bal", deployerBal.toString())
+
+    contractBal = await provider.getBalance( elixir.address)
+    console.log("contract amount", contractBal.toString())
 
   })
   
