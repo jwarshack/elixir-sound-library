@@ -12,17 +12,7 @@ export default function ArbitrumAlert() {
 
 
     async function addNetwork() {
-        // if(!web3Provider) {
-        //     toast({
-        //         position: "top",
-        //         title: "No wallet detected",
-        //         description: "Please connect wallet.",
-        //         status: "error",
-        //         duration: 9000,
-        //         isClosable: true,
-        //     })
-        //     return
-        // }
+
 
         const params = {
             chainId: '0xa4b1',
