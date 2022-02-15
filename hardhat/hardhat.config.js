@@ -46,7 +46,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 //     apiKey: process.env.ARBISCAN_API_KEY
 //   },
   solidity: {
-    version: "0.8.4",
+    version: "0.8.7",
     settings: {
       optimizer: {
         enabled: true,

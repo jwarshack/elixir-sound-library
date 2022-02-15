@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -47,7 +47,7 @@ contract ElixirSoundLibrary is ERC721URIStorage, Ownable {
     /**
      * @notice Mints sound 
      * @param _data SoundData containing price and tokenURI
-     * @dev tokenURI should be an IPFS CID`
+     * @dev tokenURI should be an IPFS CID
      */
     function mintSound(SoundData memory _data) external {
         uint256 currentId = tokenCounter.current();
@@ -76,12 +76,12 @@ contract ElixirSoundLibrary is ERC721URIStorage, Ownable {
 
         isLicensed[_tokenId][msg.sender] = true;
 
-        // Platform takes 4% fee
+        // 4% fee
         uint256 _fee = _price / 25; 
         
         // Transfer ether to token owner
 		(bool success, ) = _tokenOwner.call{value: _price - _fee}("");
-		require(success, "Falied to send ether");
+		require(success, "Failed to send ether");
 
         emit SoundLicensed(_tokenId, _price, _tokenOwner, msg.sender);
     }
