@@ -1,7 +1,7 @@
 import { Flex, Box, Link, VStack, useToast, Button} from "@chakra-ui/react"
 import NextLink from 'next/link'
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ethers } from "ethers"
 import { shortAddress } from '../utils/helpers'
 import { useWeb3 } from "../context/useWeb3"
@@ -18,6 +18,24 @@ export default function Navbar() {
 
     const { setWeb3Provider, web3Provider } = useWeb3()
     const toast = useToast()
+
+    useEffect(() => {
+        if (window.ethereum) {
+            function cleanUp() {
+                console.log(window.ethereum)
+                // window.ethereum.removeListener('accountsChanged', () => {
+                    
+                // })
+                // window.ethereum.removeListener('chainChanged', () => {
+
+
+                // })
+                // console.log('cleaning up')
+                // console.log(window.ethereum)
+            }
+            cleanUp()
+        }
+    },[])
 
     function toggleMobileNav() {
         const prevValue = showMobileNav
@@ -61,7 +79,7 @@ export default function Navbar() {
                     window.location.reload()
                   });
                   
-                  ethereum.on('chainChanged', (chainId) => {
+                  ethereum.on('chainChanged', () => {
                     window.location.reload();
     
                   });
