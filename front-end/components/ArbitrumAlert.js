@@ -35,7 +35,7 @@ export default function ArbitrumAlert() {
     }
 
     return (
-        <Alert position="absolute" top="0" bg="white" justifyContent="center" p="0">
+        <Alert position="absolute" top="0" bg="white" justifyContent="center" p="0" display={{base: "none", sm:"flex"}}>
             <Flex align="center">
                 <Image src={arbitrum} width={25} height={25} alt="Arbitrum Logo"/>
                 <AlertTitle ml="2">We are live on Arbitrum!</AlertTitle>
