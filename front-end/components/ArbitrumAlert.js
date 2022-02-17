@@ -33,7 +33,6 @@ export default function ArbitrumAlert() {
             params: [params, accounts[0]],
           })
     }
-
     return (
         <Alert position="absolute" top="0" bg="white" justifyContent="center" p="0" display={{base: "none", sm:"flex"}}>
             <Flex align="center">
